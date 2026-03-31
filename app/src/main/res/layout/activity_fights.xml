@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#F5F5F5">
+
+    <Button
+        android:id="@+id/btnBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/back_to_main"
+        android:layout_marginTop="90dp"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:id="@+id/tvScoreFights"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/score_label"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Área de Combate -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="16dp">
+
+        <!-- Jogador -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/ivPlayer"
+                android:layout_width="120dp"
+                android:layout_height="180dp"
+                android:src="@drawable/player"
+                android:scaleType="centerCrop"/>
+
+            <ProgressBar
+                android:id="@+id/pbPlayerHealth"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="12dp"
+                android:max="100"
+                android:progress="100"
+                android:progressTint="#4CAF50" />
+
+            <TextView
+                android:id="@+id/tvPlayerHealthLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Player: 100/100"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="VS"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginHorizontal="8dp" />
+
+        <!-- Inimigo -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/ivEnemy"
+                android:layout_width="120dp"
+                android:layout_height="180dp"
+                android:src="@drawable/fungo_idle"
+                android:scaleType="centerCrop"/>
+
+            <ProgressBar
+                android:id="@+id/pbEnemyHealth"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="12dp"
+                android:max="100"
+                android:progress="100"
+                android:progressTint="#F44336" />
+
+            <TextView
+                android:id="@+id/tvEnemyHealthLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Inimigo: 100/100"
+                android:textSize="20sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/stats_title"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <TextView android:id="@+id/tvAttack" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/stat_attack" />
+            <Button android:id="@+id/btnUpgradeAttack" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/upgrade_attack" android:layout_marginBottom="4dp" />
+
+            <TextView android:id="@+id/tvDefense" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/stat_defense" />
+            <Button android:id="@+id/btnUpgradeDefense" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/upgrade_defense" android:layout_marginBottom="4dp" />
+
+            <TextView android:id="@+id/tvHealth" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/stat_health" />
+            <Button android:id="@+id/btnUpgradeHealth" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/upgrade_health" android:layout_marginBottom="4dp" />
+
+            <TextView android:id="@+id/tvAPS" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/stat_aps" />
+            <Button android:id="@+id/btnUpgradeAPS" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/upgrade_aps" android:layout_marginBottom="8dp" />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

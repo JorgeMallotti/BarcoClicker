@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingTop="90dp"
+    android:background="#F5F5F5"
+    tools:context=".MainActivity">
+
+    <!-- Score Fixo no Topo -->
+    <TextView
+        android:id="@+id/tvScore"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/score_label"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="16dp">
+
+            <!-- Botão de Clique com Imagem -->
+            <ImageButton
+                android:id="@+id/btnClick"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:src="@drawable/boat_row_large"
+                android:scaleType="fitCenter"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:layout_marginBottom="32dp"
+                android:elevation="8dp"
+                android:contentDescription="@string/click_me" />
+
+            <Button
+                android:id="@+id/btnUpgrade"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/upgrade_label"
+                android:layout_marginBottom="12dp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+
+            <!-- Botão de Combate -->
+            <Button
+                android:id="@+id/btnGoToFights"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/go_to_fights"
+                android:backgroundTint="#E91E63"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Botão de Música -->
+            <Button
+                android:id="@+id/btnMusic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/buy_music"
+                android:backgroundTint="@color/teal_700"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Novo Botão Boat Speed E -->
+            <Button
+                android:id="@+id/btnBoatSpeedE"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/buy_boat_speed_e"
+                android:backgroundTint="#FF9800"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/generators_title"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp"
+                android:textColor="@color/purple_700" />
+
+            <Button
+                android:id="@+id/btnRemo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/autoclicker_remo"
+                android:layout_marginBottom="8dp" />
+
+            <Button
+                android:id="@+id/btnMaquina"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/autoclicker_maquina"
+                android:layout_marginBottom="8dp" />
+
+            <Button
+                android:id="@+id/btnEstrutura"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/autoclicker_estrutura"
+                android:layout_marginBottom="8dp" />
+
+            <Button
+                android:id="@+id/btnBarco"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/autoclicker_barco"
+                android:layout_marginBottom="16dp" />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

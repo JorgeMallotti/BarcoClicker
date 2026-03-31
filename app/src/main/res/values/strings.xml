@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">Barco Clicker</string>
+    <string name="click_me">Clica aqui!</string>
+    <string name="score_label">Barcos: %1$.2f</string>
+    <string name="upgrade_label">Melhorar Clique (Custo: %1$.2f)</string>
+    <string name="generators_title">Geradores Automáticos</string>
+
+    <string name="autoclicker_remo">Remo (Total: %1$.2f/s) (+%2$.2f/s) (Custo: %3$.2f)</string>
+    <string name="autoclicker_maquina">Máquina (Total: %1$.2f/s) (+%2$.2f/s) (Custo: %3$.2f)</string>
+    <string name="autoclicker_estrutura">Estrutura (Total: %1$.2f/s) (+%2$.2f/s) (Custo: %3$.2f)</string>
+    <string name="autoclicker_barco">Barco (Total: %1$.2f/s) (+%2$.2f/s) (Custo: %3$.2f)</string>
+
+    <string name="buy_music">Comprar Música (Custo: 1000.00)</string>
+    <string name="music_on">Desligar Música</string>
+    <string name="music_off">Ligar Música</string>
+
+    <string name="buy_boat_speed_e">Comprar melhora do Barco (Custo: 1000.00)</string>
+    <string name="boat_speed_e_activated">Melhora Ativa!</string>
+
+    <!-- Fights -->
+    <string name="go_to_fights">Ir para Combate</string>
+    <string name="back_to_main">Voltar ao Clicker</string>
+    <string name="stats_title">Atributos do Jogador</string>
+    <string name="stat_attack">Ataque: %1$.2f</string>
+    <string name="stat_defense">Defesa: %1$.2f</string>
+    <string name="stat_health">Vida: %1$.0f / %2$.0f</string>
+    <string name="stat_aps">Ataques por Seg: %1$.2f</string>
+
+    <string name="upgrade_attack">Melhorar Ataque (Custo: %1$.2f)</string>
+    <string name="upgrade_defense">Melhorar Defesa (Custo: %1$.2f)</string>
+    <string name="upgrade_health">Melhorar Vida (Custo: %1$.2f)</string>
+    <string name="upgrade_aps">Melhorar Vel. Ataque (Custo: %1$.2f)</string>
+
+    <string name="enemy_name">Fungo Inimigo</string>
+    <string name="victory">Vitória! Ganhaste barcos!</string>
+    <string name="defeat">Derrota! Foste nocauteado.</string>
+</resources>
