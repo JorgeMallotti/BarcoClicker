@@ -13,20 +13,22 @@ public class GameData {
     private double defense = 5.0;
     private double maxHealth = 100.0;
     private double currentHealth = 100.0;
-    private double attackSpeed = 1.0;
+    private double agi = 10.0;
+    private double lucky = 5.0;
 
     // Fight Upgrade Costs
     private double costAttack = 50.0;
     private double costDefense = 50.0;
     private double costHealth = 50.0;
-    private double costAPS = 100.0;
+    private double costAGI = 100.0;
+    private double costLucky = 150.0;
 
     // Enemy Stats (Fungo)
     private double enemyMaxHealth = 100.0;
     private double enemyCurrentHealth = 100.0;
     private double enemyAttack = 8.0;
     private double enemyDefense = 2.0;
-    private double enemyAttackSpeed = 0.8;
+    private double enemyAGI = 8.0;
     private double enemyReward = 200.0;
 
     // Boss System
@@ -96,8 +98,11 @@ public class GameData {
     public void setCurrentHealth(double health) { this.currentHealth = health; }
     public void subCurrentHealth(double amount) { this.currentHealth -= amount; }
     
-    public double getAttackSpeed() { return attackSpeed; }
-    public void addAttackSpeed(double amount) { this.attackSpeed += amount; }
+    public double getAGI() { return agi; }
+    public void addAGI(double amount) { this.agi += amount; }
+
+    public double getLucky() { return lucky; }
+    public void addLucky(double amount) { this.lucky += amount; }
 
     // Upgrade Costs
     public double getCostAttack() { return costAttack; }
@@ -109,8 +114,11 @@ public class GameData {
     public double getCostHealth() { return costHealth; }
     public void multiplyCostHealth(double multiplier) { this.costHealth *= multiplier; }
 
-    public double getCostAPS() { return costAPS; }
-    public void multiplyCostAPS(double multiplier) { this.costAPS *= multiplier; }
+    public double getCostAGI() { return costAGI; }
+    public void multiplyCostAGI(double multiplier) { this.costAGI *= multiplier; }
+
+    public double getCostLucky() { return costLucky; }
+    public void multiplyCostLucky(double multiplier) { this.costLucky *= multiplier; }
 
     // Enemy Getters/Setters
     public double getEnemyMaxHealth() { return enemyMaxHealth; }
@@ -127,7 +135,10 @@ public class GameData {
     
     public double getEnemyDefense() { return enemyDefense; }
     public void setEnemyDefense(double d) { this.enemyDefense = d; }
-    public double getEnemyAttackSpeed() { return enemyAttackSpeed; }
+    
+    public double getEnemyAGI() { return enemyAGI; }
+    public void setEnemyAGI(double a) { this.enemyAGI = a; }
+    public void multiplyEnemyAGI(double m) { this.enemyAGI *= m; }
     
     public double getEnemyReward() { return enemyReward; }
     public void setEnemyReward(double r) { this.enemyReward = r; }

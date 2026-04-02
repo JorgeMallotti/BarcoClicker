@@ -4,26 +4,38 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import java.util.Random;
 
 public class FightsActivity extends AppCompatActivity {
 
     private GameData gameData;
-    private TextView tvScore, tvAttack, tvDefense, tvHealth, tvAPS;
-    private TextView tvPlayerHealthLabel, tvEnemyHealthLabel;
+    private TextView tvScore, tvAttack, tvDefense, tvHealth, tvAGI, tvLucky;
+    private TextView tvPlayerHealthLabel, tvEnemyHealthLabel, tvBossWarning;
     private ProgressBar pbPlayerHealth, pbEnemyHealth;
-    private Button btnBack, btnUpgradeAttack, btnUpgradeDefense, btnUpgradeHealth, btnUpgradeAPS;
+    private Button btnBack, btnUpgradeAttack, btnUpgradeDefense, btnUpgradeHealth, btnUpgradeAGI, btnUpgradeLucky;
+    private Button btnActionAttack, btnActionDefend;
+    private LinearLayout layoutCombatMenu;
     private ImageView ivPlayer, ivEnemy;
     private MediaPlayer gritoPlayer;
+    private MediaPlayer effectPlayer;
+    private MediaPlayer comboPlayer;
 
     private final Handler handler = new Handler(Looper.getMainLooper());
-    
-    // Timer para produção de pílulas (Clicker) - Agora 10x por segundo
+    private final Random random = new Random();
+
+    private boolean isPlayerTurn = false;
+    private boolean isPlayerDefending = false;
+    private boolean isBossPreparingSpecial = false;
+
+    // Timer para produção de barcos (Clicker)
     private final Runnable autoClickRunnable = new Runnable() {
         @Override
         public void run() {
@@ -33,50 +45,55 @@ public class FightsActivity extends AppCompatActivity {
         }
     };
 
-    // Timer para o Combate
-    private final Runnable fightRunnable = new Runnable() {
-        @Override
-        public void run() {
-            doCombatTick();
-            handler.postDelayed(this, 100); // Processa combate a cada 0.1s para suavidade
-        }
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fights);
 
         gameData = GameData.getInstance();
-        gameData.resetEnemy(); // Começa com o inimigo com vida cheia
+        gameData.resetEnemy();
 
         // Vincular UI
         tvScore = findViewById(R.id.tvScoreFights);
         tvAttack = findViewById(R.id.tvAttack);
         tvDefense = findViewById(R.id.tvDefense);
         tvHealth = findViewById(R.id.tvHealth);
-        tvAPS = findViewById(R.id.tvAPS);
+        tvAGI = findViewById(R.id.tvAGI);
+        tvLucky = findViewById(R.id.tvLucky);
         
         tvPlayerHealthLabel = findViewById(R.id.tvPlayerHealthLabel);
         tvEnemyHealthLabel = findViewById(R.id.tvEnemyHealthLabel);
+        tvBossWarning = findViewById(R.id.tvBossWarning);
         pbPlayerHealth = findViewById(R.id.pbPlayerHealth);
         pbEnemyHealth = findViewById(R.id.pbEnemyHealth);
         
         ivPlayer = findViewById(R.id.ivPlayer);
         ivEnemy = findViewById(R.id.ivEnemy);
 
-        btnBack = findViewById(R.id.btnBack);
+        layoutCombatMenu = findViewById(R.id.layoutCombatMenu);
+        btnActionAttack = findViewById(R.id.btn_attack);
+        btnActionDefend = findViewById(R.id.btn_defend);
+
+        btnBack = findViewById(R.id.btn_back);
         btnUpgradeAttack = findViewById(R.id.btnUpgradeAttack);
         btnUpgradeDefense = findViewById(R.id.btnUpgradeDefense);
         btnUpgradeHealth = findViewById(R.id.btnUpgradeHealth);
-        btnUpgradeAPS = findViewById(R.id.btnUpgradeAPS);
+        btnUpgradeAGI = findViewById(R.id.btnUpgradeAGI);
+        btnUpgradeLucky = findViewById(R.id.btnUpgradeLucky);
 
         btnBack.setOnClickListener(v -> finish());
 
-        // Lógica de Upgrades
-        // Clique curto: Compra 1 nível
-        // Clique longo: Compra o máximo possível com o score atual
+        setupUpgradeButtons();
 
+        // Ações de Combate
+        btnActionAttack.setOnClickListener(v -> playerAttack());
+        btnActionDefend.setOnClickListener(v -> playerDefend());
+
+        determineFirstTurn();
+    }
+
+    private void setupUpgradeButtons() {
+        // Attack
         btnUpgradeAttack.setOnClickListener(v -> {
             if (gameData.getScore() >= gameData.getCostAttack()) {
                 gameData.subScore(gameData.getCostAttack());
@@ -85,7 +102,6 @@ public class FightsActivity extends AppCompatActivity {
                 updateUI();
             }
         });
-
         btnUpgradeAttack.setOnLongClickListener(v -> {
             boolean bought = false;
             while (gameData.getScore() >= gameData.getCostAttack()) {
@@ -98,6 +114,7 @@ public class FightsActivity extends AppCompatActivity {
             return true;
         });
 
+        // Defense
         btnUpgradeDefense.setOnClickListener(v -> {
             if (gameData.getScore() >= gameData.getCostDefense()) {
                 gameData.subScore(gameData.getCostDefense());
@@ -106,7 +123,6 @@ public class FightsActivity extends AppCompatActivity {
                 updateUI();
             }
         });
-
         btnUpgradeDefense.setOnLongClickListener(v -> {
             boolean bought = false;
             while (gameData.getScore() >= gameData.getCostDefense()) {
@@ -119,6 +135,7 @@ public class FightsActivity extends AppCompatActivity {
             return true;
         });
 
+        // Health
         btnUpgradeHealth.setOnClickListener(v -> {
             if (gameData.getScore() >= gameData.getCostHealth()) {
                 gameData.subScore(gameData.getCostHealth());
@@ -128,7 +145,6 @@ public class FightsActivity extends AppCompatActivity {
                 updateUI();
             }
         });
-
         btnUpgradeHealth.setOnLongClickListener(v -> {
             boolean bought = false;
             while (gameData.getScore() >= gameData.getCostHealth()) {
@@ -144,21 +160,42 @@ public class FightsActivity extends AppCompatActivity {
             return true;
         });
 
-        btnUpgradeAPS.setOnClickListener(v -> {
-            if (gameData.getScore() >= gameData.getCostAPS()) {
-                gameData.subScore(gameData.getCostAPS());
-                gameData.addAttackSpeed(0.1);
-                gameData.multiplyCostAPS(1.6);
+        // AGI
+        btnUpgradeAGI.setOnClickListener(v -> {
+            if (gameData.getScore() >= gameData.getCostAGI()) {
+                gameData.subScore(gameData.getCostAGI());
+                gameData.addAGI(2);
+                gameData.multiplyCostAGI(1.4);
                 updateUI();
             }
         });
-
-        btnUpgradeAPS.setOnLongClickListener(v -> {
+        btnUpgradeAGI.setOnLongClickListener(v -> {
             boolean bought = false;
-            while (gameData.getScore() >= gameData.getCostAPS()) {
-                gameData.subScore(gameData.getCostAPS());
-                gameData.addAttackSpeed(0.1);
-                gameData.multiplyCostAPS(1.6);
+            while (gameData.getScore() >= gameData.getCostAGI()) {
+                gameData.subScore(gameData.getCostAGI());
+                gameData.addAGI(2);
+                gameData.multiplyCostAGI(1.4);
+                bought = true;
+            }
+            if (bought) updateUI();
+            return true;
+        });
+
+        // Lucky
+        btnUpgradeLucky.setOnClickListener(v -> {
+            if (gameData.getScore() >= gameData.getCostLucky()) {
+                gameData.subScore(gameData.getCostLucky());
+                gameData.addLucky(1);
+                gameData.multiplyCostLucky(1.4);
+                updateUI();
+            }
+        });
+        btnUpgradeLucky.setOnLongClickListener(v -> {
+            boolean bought = false;
+            while (gameData.getScore() >= gameData.getCostLucky()) {
+                gameData.subScore(gameData.getCostLucky());
+                gameData.addLucky(1);
+                gameData.multiplyCostLucky(1.4);
                 bought = true;
             }
             if (bought) updateUI();
@@ -166,73 +203,204 @@ public class FightsActivity extends AppCompatActivity {
         });
     }
 
-    private void doCombatTick() {
-        // Cálculo de Dano: (Ataque * AtaquesPorSegundo) / 10 (porque o tick é 0.1s)
-        double playerDamagePerTick = (Math.max(1, gameData.getAttack() - gameData.getEnemyDefense()) * gameData.getAttackSpeed()) / 10.0;
-        double enemyDamagePerTick = (Math.max(1, gameData.getEnemyAttack() - gameData.getDefense()) * gameData.getEnemyAttackSpeed()) / 10.0;
+    private void determineFirstTurn() {
+        isPlayerDefending = false;
+        isBossPreparingSpecial = false;
+        if (gameData.getAGI() >= gameData.getEnemyAGI()) {
+            startPlayerTurn();
+        } else {
+            startEnemyTurn();
+        }
+    }
 
-        // Aplicar dano
-        gameData.subEnemyCurrentHealth(playerDamagePerTick);
-        gameData.subCurrentHealth(enemyDamagePerTick);
+    private void startPlayerTurn() {
+        isPlayerTurn = true;
+        isPlayerDefending = false;
+        layoutCombatMenu.setVisibility(View.VISIBLE);
+        Toast.makeText(this, R.string.player_turn, Toast.LENGTH_SHORT).show();
+    }
 
-        // Verificar Vitória
+    private void playerAttack() {
+        if (!isPlayerTurn) return;
+        isPlayerTurn = false;
+        layoutCombatMenu.setVisibility(View.GONE);
+
+        playSound(R.raw.simple_hit);
+
+        double baseDamage = gameData.getAttack() * 4.0;
+        double mitigation = gameData.getEnemyDefense() * 2.0;
+        double finalDamage = Math.max(1, baseDamage - mitigation);
+
+        if (random.nextDouble() * 100 < gameData.getLucky()) {
+            finalDamage *= 2.0;
+            Toast.makeText(this, R.string.critical_hit, Toast.LENGTH_SHORT).show();
+        }
+
+        gameData.subEnemyCurrentHealth(finalDamage);
+        onActionFinished();
+    }
+
+    private void playerDefend() {
+        if (!isPlayerTurn) return;
+        isPlayerTurn = false;
+        isPlayerDefending = true;
+        layoutCombatMenu.setVisibility(View.GONE);
+        Toast.makeText(this, R.string.defense_activated, Toast.LENGTH_SHORT).show();
+        onActionFinished();
+    }
+
+    private void onActionFinished() {
+        updateCombatUI();
+        if (gameData.getEnemyCurrentHealth() <= 0) {
+            checkCombatStatus();
+        } else {
+            if (isBossPreparingSpecial) {
+                handler.postDelayed(this::executeBossSpecial, 1000);
+            } else {
+                handler.postDelayed(this::startEnemyTurn, 1000);
+            }
+        }
+    }
+
+    private void startEnemyTurn() {
+        if (gameData.isBossActive() && !isBossPreparingSpecial && random.nextInt(100) < 30) {
+            isBossPreparingSpecial = true;
+            tvBossWarning.setVisibility(View.VISIBLE);
+            Toast.makeText(this, R.string.boss_warning_toast, Toast.LENGTH_LONG).show();
+            handler.postDelayed(this::startPlayerTurn, 1000);
+            return;
+        }
+
+        String enemyName = gameData.isBossActive() ? getString(R.string.enemy_name_boss) : getString(R.string.enemy_name_fungo);
+        Toast.makeText(this, getString(R.string.enemy_turn, enemyName), Toast.LENGTH_SHORT).show();
+        playSound(R.raw.simple_hit);
+
+        double baseDamage = gameData.getEnemyAttack() * 4.0;
+        double defMult = isPlayerDefending ? 3.0 : 1.0;
+        double mitigation = (gameData.getDefense() * 2.0) * defMult;
+        double finalDamage = Math.max(1, baseDamage - mitigation);
+
+        gameData.subCurrentHealth(finalDamage);
+        checkCombatStatus();
+
+        if (gameData.getCurrentHealth() > 0) {
+            handler.postDelayed(this::startPlayerTurn, 1000);
+        }
+    }
+
+    private void executeBossSpecial() {
+        isBossPreparingSpecial = false;
+        tvBossWarning.setVisibility(View.GONE);
+        Toast.makeText(this, R.string.boss_executing_special, Toast.LENGTH_SHORT).show();
+        
+        if (comboPlayer != null) { comboPlayer.release(); }
+        comboPlayer = MediaPlayer.create(this, R.raw.hit_combo);
+        if (comboPlayer != null) {
+            comboPlayer.setLooping(true);
+            comboPlayer.start();
+        }
+
+        final int totalHits = 800;
+        final int durationMs = 5000;
+        final int intervalMs = 100;
+        final int totalIntervals = durationMs / intervalMs;
+        final int hitsPerInterval = totalHits / totalIntervals;
+        
+        handler.post(new Runnable() {
+            int intervalsDone = 0;
+            @Override
+            public void run() {
+                if (intervalsDone < totalIntervals && gameData.getCurrentHealth() > 0) {
+                    double baseDamage = gameData.getEnemyAttack() * 2.0;
+                    double defMult = isPlayerDefending ? 3.0 : 1.0;
+                    double mitigation = (gameData.getDefense() * 2.0) * defMult;
+                    double finalDamagePerHit = Math.max(1, baseDamage - mitigation);
+                    
+                    gameData.subCurrentHealth(finalDamagePerHit * hitsPerInterval);
+                    updateCombatUI();
+                    
+                    intervalsDone++;
+                    handler.postDelayed(this, intervalMs);
+                } else {
+                    if (comboPlayer != null) {
+                        comboPlayer.stop();
+                        comboPlayer.release();
+                        comboPlayer = null;
+                    }
+                    if (gameData.getCurrentHealth() <= 0) {
+                        checkCombatStatus();
+                    } else {
+                        startPlayerTurn();
+                    }
+                }
+            }
+        });
+    }
+
+    private void checkCombatStatus() {
+        updateCombatUI();
+
+        // Vitória
         if (gameData.getEnemyCurrentHealth() <= 0) {
             playGritoSound();
             gameData.addScore(gameData.getEnemyReward());
             
             if (gameData.isBossActive()) {
-                Toast.makeText(this, "BOSS DERROTADO: FUNGO VELHO!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.boss_defeated, Toast.LENGTH_SHORT).show();
                 gameData.setBossActive(false);
                 gameData.resetFungoVictories();
-                // Retorna o multiplicador ao normal para os inimigos comuns
                 gameData.multiplyEnemyMaxHealth(0.10);
                 gameData.multiplyEnemyAttack(0.10);
                 gameData.multiplyEnemyReward(0.10);
+                gameData.setEnemyAGI(gameData.getEnemyAGI() * 0.10);
             } else {
                 Toast.makeText(this, R.string.victory, Toast.LENGTH_SHORT).show();
                 gameData.addFungoVictory();
-                
-                // Inimigo fica mais forte a cada derrota
                 gameData.multiplyEnemyMaxHealth(1.2);
                 gameData.multiplyEnemyAttack(1.1);
                 gameData.multiplyEnemyReward(1.3);
+                gameData.setEnemyAGI(gameData.getEnemyAGI() * 1.1);
 
-                // Verifica se o Boss deve aparecer agora (após 5 vitórias)
                 if (gameData.getFungoVictories() >= 5) {
                     gameData.setBossActive(true);
                     gameData.multiplyEnemyMaxHealth(10.0);
                     gameData.multiplyEnemyAttack(10.0);
                     gameData.multiplyEnemyReward(10.0);
-                    Toast.makeText(this, "UM FUNGO VELHO APARECEU!", Toast.LENGTH_LONG).show();
+                    gameData.setEnemyAGI(gameData.getEnemyAGI() * 10.0);
+                    Toast.makeText(this, R.string.boss_appeared, Toast.LENGTH_LONG).show();
                 }
             }
-            
             gameData.resetEnemy();
+            determineFirstTurn();
         }
 
-        // Verificar Derrota
+        // Derrota
         if (gameData.getCurrentHealth() <= 0) {
+            playSound(R.raw.dying);
             Toast.makeText(this, R.string.defeat, Toast.LENGTH_SHORT).show();
-            gameData.setCurrentHealth(gameData.getMaxHealth()); // Ressuscita
+            gameData.setCurrentHealth(gameData.getMaxHealth());
             gameData.resetEnemy();
+            determineFirstTurn();
         }
+    }
 
-        updateCombatUI();
+    private void playSound(int soundResId) {
+        if (effectPlayer != null) {
+            effectPlayer.release();
+        }
+        effectPlayer = MediaPlayer.create(this, soundResId);
+        if (effectPlayer != null) {
+            effectPlayer.setOnCompletionListener(MediaPlayer::release);
+            effectPlayer.start();
+        }
     }
 
     private void playGritoSound() {
-        // Se já está a tocar, pára e reinicia
         if (gameData.isGritoSoundPlaying() && gritoPlayer != null) {
-            try {
-                gritoPlayer.stop();
-                gritoPlayer.release();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            try { gritoPlayer.stop(); gritoPlayer.release(); } catch (Exception e) {}
             gritoPlayer = null;
             gameData.setGritoSoundPlaying(false);
         }
-
         gritoPlayer = MediaPlayer.create(this, R.raw.grito);
         if (gritoPlayer != null) {
             gameData.setGritoSoundPlaying(true);
@@ -246,18 +414,16 @@ public class FightsActivity extends AppCompatActivity {
     }
 
     private void updateCombatUI() {
-        // Barras de Vida
         pbPlayerHealth.setMax((int) gameData.getMaxHealth());
         pbPlayerHealth.setProgress((int) Math.max(0, gameData.getCurrentHealth()));
-        tvPlayerHealthLabel.setText(String.format("Caçador de Fungos: %.0f/%.0f", gameData.getCurrentHealth(), gameData.getMaxHealth()));
+        tvPlayerHealthLabel.setText(getString(R.string.tu_label, gameData.getCurrentHealth(), gameData.getMaxHealth()));
 
         pbEnemyHealth.setMax((int) gameData.getEnemyMaxHealth());
         pbEnemyHealth.setProgress((int) Math.max(0, gameData.getEnemyCurrentHealth()));
         
-        String enemyName = gameData.isBossActive() ? "Fungo Velho" : "Fungo";
-        tvEnemyHealthLabel.setText(String.format("%s: %.0f/%.0f", enemyName, gameData.getEnemyCurrentHealth(), gameData.getEnemyMaxHealth()));
+        String enemyName = gameData.isBossActive() ? getString(R.string.enemy_name_boss) : getString(R.string.enemy_name_fungo);
+        tvEnemyHealthLabel.setText(getString(R.string.stat_health_enemy_label, enemyName, gameData.getEnemyCurrentHealth(), gameData.getEnemyMaxHealth()));
 
-        // Troca a imagem se for Boss
         if (gameData.isBossActive()) {
             ivEnemy.setImageResource(R.drawable.fungo_idle_boss);
         } else {
@@ -270,7 +436,6 @@ public class FightsActivity extends AppCompatActivity {
         super.onResume();
         gameData.lastUpdateTime = System.currentTimeMillis();
         handler.post(autoClickRunnable);
-        handler.post(fightRunnable);
         updateUI();
     }
 
@@ -278,32 +443,46 @@ public class FightsActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         handler.removeCallbacks(autoClickRunnable);
-        handler.removeCallbacks(fightRunnable);
-        // Garante que o som pára ao sair da atividade
-        if (gritoPlayer != null) {
-            gritoPlayer.release();
-            gritoPlayer = null;
-            gameData.setGritoSoundPlaying(false);
+        if (comboPlayer != null) {
+            comboPlayer.stop();
+            comboPlayer.release();
+            comboPlayer = null;
         }
     }
 
     private void updateUI() {
         tvScore.setText(getString(R.string.score_label, gameData.getScore()));
-        tvAttack.setText(getString(R.string.stat_attack, gameData.getAttack()));
-        tvDefense.setText(getString(R.string.stat_defense, gameData.getDefense()));
-        tvHealth.setText(getString(R.string.stat_health, gameData.getCurrentHealth(), gameData.getMaxHealth()));
-        tvAPS.setText(getString(R.string.stat_aps, gameData.getAttackSpeed()));
+        tvAttack.setText(getString(R.string.stat_attack_label, gameData.getAttack()));
+        tvDefense.setText(getString(R.string.stat_defense_label, gameData.getDefense()));
+        tvHealth.setText(getString(R.string.stat_health_label, gameData.getCurrentHealth(), gameData.getMaxHealth()));
+        tvAGI.setText(getString(R.string.stat_agi_label, gameData.getAGI()));
+        tvLucky.setText(getString(R.string.stat_lucky_label, gameData.getLucky()));
 
         btnUpgradeAttack.setText(getString(R.string.upgrade_attack, gameData.getCostAttack()));
         btnUpgradeDefense.setText(getString(R.string.upgrade_defense, gameData.getCostDefense()));
         btnUpgradeHealth.setText(getString(R.string.upgrade_health, gameData.getCostHealth()));
-        btnUpgradeAPS.setText(getString(R.string.upgrade_aps, gameData.getCostAPS()));
+        btnUpgradeAGI.setText(getString(R.string.upgrade_agi, gameData.getCostAGI()));
+        btnUpgradeLucky.setText(getString(R.string.upgrade_lucky, gameData.getCostLucky()));
 
         btnUpgradeAttack.setEnabled(gameData.getScore() >= gameData.getCostAttack());
         btnUpgradeDefense.setEnabled(gameData.getScore() >= gameData.getCostDefense());
         btnUpgradeHealth.setEnabled(gameData.getScore() >= gameData.getCostHealth());
-        btnUpgradeAPS.setEnabled(gameData.getScore() >= gameData.getCostAPS());
+        btnUpgradeAGI.setEnabled(gameData.getScore() >= gameData.getCostAGI());
+        btnUpgradeLucky.setEnabled(gameData.getScore() >= gameData.getCostLucky());
         
         updateCombatUI();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (effectPlayer != null) {
+            effectPlayer.release();
+            effectPlayer = null;
+        }
+        if (comboPlayer != null) {
+            comboPlayer.release();
+            comboPlayer = null;
+        }
     }
 }

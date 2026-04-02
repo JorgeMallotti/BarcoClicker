@@ -4,110 +4,133 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="#F5F5F5">
+    android:background="#E3F2FD">
 
-    <Button
-        android:id="@+id/btnBack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/back_to_main"
-        android:layout_marginTop="90dp"
-        android:layout_marginBottom="8dp" />
-
+    <!-- Score -->
     <TextView
         android:id="@+id/tvScoreFights"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/score_label"
-        android:textSize="20sp"
+        android:textSize="24sp"
         android:textStyle="bold"
         android:gravity="center"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="16dp"/>
 
-    <!-- Área de Combate -->
+    <!-- Combat Area -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginBottom="16dp">
+        android:gravity="center">
 
-        <!-- Jogador -->
+        <!-- Player -->
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="center">
-
-            <ImageView
-                android:id="@+id/ivPlayer"
-                android:layout_width="120dp"
-                android:layout_height="180dp"
-                android:src="@drawable/player"
-                android:scaleType="centerCrop"/>
-
-            <ProgressBar
-                android:id="@+id/pbPlayerHealth"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="match_parent"
-                android:layout_height="12dp"
-                android:max="100"
-                android:progress="100"
-                android:progressTint="#4CAF50" />
 
             <TextView
                 android:id="@+id/tvPlayerHealthLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Player: 100/100"
-                android:textSize="15sp" />
+                android:text="@string/tu_label" />
+
+            <ProgressBar
+                android:id="@+id/pbPlayerHealth"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:progressDrawable="@android:drawable/progress_horizontal" />
+
+            <ImageView
+                android:id="@+id/ivPlayer"
+                android:layout_width="120dp"
+                android:layout_height="180dp"
+                android:src="@drawable/player" />
         </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="VS"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginHorizontal="8dp" />
+            android:textSize="32sp"
+            android:textStyle="bold" />
 
-        <!-- Inimigo -->
+        <!-- Enemy -->
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="center">
 
-            <ImageView
-                android:id="@+id/ivEnemy"
-                android:layout_width="120dp"
-                android:layout_height="180dp"
-                android:src="@drawable/fungo_idle"
-                android:scaleType="centerCrop"/>
-
-            <ProgressBar
-                android:id="@+id/pbEnemyHealth"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="match_parent"
-                android:layout_height="12dp"
-                android:max="100"
-                android:progress="100"
-                android:progressTint="#F44336" />
+            <!-- Boss Warning Text -->
+            <TextView
+                android:id="@+id/tvBossWarning"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/boss_preparing_special"
+                android:textColor="#FF0000"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:visibility="gone"
+                android:gravity="center"
+                android:layout_marginBottom="4dp"/>
 
             <TextView
                 android:id="@+id/tvEnemyHealthLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Inimigo: 100/100"
-                android:textSize="20sp" />
+                android:text="Fungo: 100/100" />
+
+            <ProgressBar
+                android:id="@+id/pbEnemyHealth"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:progressDrawable="@android:drawable/progress_horizontal" />
+
+            <ImageView
+                android:id="@+id/ivEnemy"
+                android:layout_width="120dp"
+                android:layout_height="180dp"
+                android:src="@drawable/fungo_idle" />
         </LinearLayout>
     </LinearLayout>
 
+    <!-- Turn Menu -->
+    <LinearLayout
+        android:id="@+id/layoutCombatMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/btn_attack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_attack"
+            android:layout_marginEnd="8dp"/>
+
+        <Button
+            android:id="@+id/btn_defend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_defend"/>
+    </LinearLayout>
+
+    <!-- Upgrades Section -->
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -115,25 +138,69 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/tvAttack"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/stats_title"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp" />
+                android:text="@string/stat_attack_label" />
+            <Button
+                android:id="@+id/btnUpgradeAttack"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/upgrade_attack" />
 
-            <TextView android:id="@+id/tvAttack" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/stat_attack" />
-            <Button android:id="@+id/btnUpgradeAttack" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/upgrade_attack" android:layout_marginBottom="4dp" />
+            <TextView
+                android:id="@+id/tvDefense"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/stat_defense_label" />
+            <Button
+                android:id="@+id/btnUpgradeDefense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/upgrade_defense" />
 
-            <TextView android:id="@+id/tvDefense" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/stat_defense" />
-            <Button android:id="@+id/btnUpgradeDefense" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/upgrade_defense" android:layout_marginBottom="4dp" />
+            <TextView
+                android:id="@+id/tvHealth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/stat_health_label" />
+            <Button
+                android:id="@+id/btnUpgradeHealth"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/upgrade_health" />
 
-            <TextView android:id="@+id/tvHealth" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/stat_health" />
-            <Button android:id="@+id/btnUpgradeHealth" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/upgrade_health" android:layout_marginBottom="4dp" />
+            <TextView
+                android:id="@+id/tvAGI"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/stat_agi_label" />
+            <Button
+                android:id="@+id/btnUpgradeAGI"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/upgrade_agi" />
 
-            <TextView android:id="@+id/tvAPS" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/stat_aps" />
-            <Button android:id="@+id/btnUpgradeAPS" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/upgrade_aps" android:layout_marginBottom="8dp" />
+            <TextView
+                android:id="@+id/tvLucky"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/stat_lucky_label" />
+            <Button
+                android:id="@+id/btnUpgradeLucky"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/upgrade_lucky" />
+
+            <Button
+                android:id="@+id/btn_back"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_back"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="#9E9E9E"/>
 
         </LinearLayout>
     </ScrollView>
+
 </LinearLayout>
