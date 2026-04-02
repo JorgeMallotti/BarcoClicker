@@ -21,11 +21,17 @@
     <string name="go_to_fights">Ir para Combate</string>
     <string name="back_to_main">Voltar ao Clicker</string>
     <string name="stats_title">Atributos do Jogador</string>
-    <string name="stat_attack">Ataque: %1$.2f</string>
-    <string name="stat_defense">Defesa: %1$.2f</string>
-    <string name="stat_health">Vida: %1$.0f / %2$.0f</string>
-    <string name="stat_aps">Ataques por Seg: %1$.2f</string>
+    <string name="stat_attack_label">Ataque: %1$.0f</string>
+    <string name="stat_defense_label">Defesa: %1$.0f</string>
+    <string name="stat_health_label">Vida: %1$.0f/%2$.0f</string>
+    <string name="stat_agi_label">AGI: %1$.0f</string>
+    <string name="stat_lucky_label">Sorte: %1$.0f</string>
+    <string name="tu_label">Tu: %1$.0f/%2$.0f</string>
+    <string name="stat_health_enemy_label">%1$s: %2$.0f/%3$.0f</string>
 
+    <string name="btn_attack">Atacar</string>
+    <string name="btn_defend">Defender</string>
+    <string name="btn_back">Voltar</string>
 
     <string name="upgrade_attack">Melhorar Ataque (Custo: %1$.0f)</string>
     <string name="upgrade_defense">Melhorar Defesa (Custo: %1$.0f)</string>
@@ -49,15 +55,7 @@
     <string name="boss_appeared">UM FUNGO VELHO APARECEU!</string>
     <string name="boss_warning_toast">FUNGO VELHO ESTÁ A PREPARAR UM ATAQUE ESPECIAL!</string>
 
-    <string name="stat_attack_label">Ataque: %1$.0f</string>
-    <string name="stat_defense_label">Defesa: %1$.0f</string>
-    <string name="stat_health_label">Vida: %1$.0f/%2$.0f</string>
-    <string name="stat_agi_label">AGI: %1$.0f</string>
-    <string name="stat_lucky_label">Sorte: %1$.0f</string>
-    <string name="tu_label">Tu: %1$.0f/%2$.0f</string>
-    <string name="stat_health_enemy_label">%1$s: %2$.0f/%3$.0f</string>
 
-    <string name="btn_attack">Atacar</string>
-    <string name="btn_defend">Defender</string>
-    <string name="btn_back">Voltar</string>
+
+
 </resources>
