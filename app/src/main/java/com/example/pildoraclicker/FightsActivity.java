@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import java.util.Random;
 
@@ -217,7 +216,6 @@ public class FightsActivity extends AppCompatActivity {
         isPlayerTurn = true;
         isPlayerDefending = false;
         layoutCombatMenu.setVisibility(View.VISIBLE);
-        Toast.makeText(this, R.string.player_turn, Toast.LENGTH_SHORT).show();
     }
 
     private void playerAttack() {
@@ -233,7 +231,6 @@ public class FightsActivity extends AppCompatActivity {
 
         if (random.nextDouble() * 100 < gameData.getLucky()) {
             finalDamage *= 2.0;
-            Toast.makeText(this, R.string.critical_hit, Toast.LENGTH_SHORT).show();
         }
 
         gameData.subEnemyCurrentHealth(finalDamage);
@@ -245,7 +242,6 @@ public class FightsActivity extends AppCompatActivity {
         isPlayerTurn = false;
         isPlayerDefending = true;
         layoutCombatMenu.setVisibility(View.GONE);
-        Toast.makeText(this, R.string.defense_activated, Toast.LENGTH_SHORT).show();
         onActionFinished();
     }
 
@@ -266,13 +262,10 @@ public class FightsActivity extends AppCompatActivity {
         if (gameData.isBossActive() && !isBossPreparingSpecial && random.nextInt(100) < 30) {
             isBossPreparingSpecial = true;
             tvBossWarning.setVisibility(View.VISIBLE);
-            Toast.makeText(this, R.string.boss_warning_toast, Toast.LENGTH_LONG).show();
             handler.postDelayed(this::startPlayerTurn, 1000);
             return;
         }
 
-        String enemyName = gameData.isBossActive() ? getString(R.string.enemy_name_boss) : getString(R.string.enemy_name_fungo);
-        Toast.makeText(this, getString(R.string.enemy_turn, enemyName), Toast.LENGTH_SHORT).show();
         playSound(R.raw.simple_hit);
 
         double baseDamage = gameData.getEnemyAttack() * 4.0;
@@ -288,10 +281,17 @@ public class FightsActivity extends AppCompatActivity {
         }
     }
 
+    private String getEnemyName() {
+        if (!gameData.isBossActive()) return getString(R.string.enemy_name_fungo);
+        int v = gameData.getFungoVictories();
+        if (v == 5) return getString(R.string.enemy_name_boss1);
+        if (v == 10) return getString(R.string.enemy_name_boss2);
+        return getString(R.string.enemy_name_boss3);
+    }
+
     private void executeBossSpecial() {
         isBossPreparingSpecial = false;
         tvBossWarning.setVisibility(View.GONE);
-        Toast.makeText(this, R.string.boss_executing_special, Toast.LENGTH_SHORT).show();
         
         if (comboPlayer != null) { comboPlayer.release(); }
         comboPlayer = MediaPlayer.create(this, R.raw.hit_combo);
@@ -346,28 +346,34 @@ public class FightsActivity extends AppCompatActivity {
             gameData.addScore(gameData.getEnemyReward());
             
             if (gameData.isBossActive()) {
-                Toast.makeText(this, R.string.boss_defeated, Toast.LENGTH_SHORT).show();
                 gameData.setBossActive(false);
-                gameData.resetFungoVictories();
+                gameData.addFungoVictory(); // Increment count to progress to next milestone
+                
+                // Normal balance after boss
                 gameData.multiplyEnemyMaxHealth(0.10);
                 gameData.multiplyEnemyAttack(0.10);
                 gameData.multiplyEnemyReward(0.10);
                 gameData.setEnemyAGI(gameData.getEnemyAGI() * 0.10);
             } else {
-                Toast.makeText(this, R.string.victory, Toast.LENGTH_SHORT).show();
                 gameData.addFungoVictory();
                 gameData.multiplyEnemyMaxHealth(1.2);
                 gameData.multiplyEnemyAttack(1.1);
                 gameData.multiplyEnemyReward(1.3);
                 gameData.setEnemyAGI(gameData.getEnemyAGI() * 1.1);
 
-                if (gameData.getFungoVictories() >= 5) {
+                int v = gameData.getFungoVictories();
+                if (v == 5 || v == 10 ) {
                     gameData.setBossActive(true);
                     gameData.multiplyEnemyMaxHealth(10.0);
                     gameData.multiplyEnemyAttack(10.0);
                     gameData.multiplyEnemyReward(10.0);
                     gameData.setEnemyAGI(gameData.getEnemyAGI() * 10.0);
-                    Toast.makeText(this, R.string.boss_appeared, Toast.LENGTH_LONG).show();
+                } else if (v == 15) {
+                    gameData.setBossActive(true);
+                    gameData.multiplyEnemyMaxHealth(100.0);
+                    gameData.multiplyEnemyAttack(10.0);
+                    gameData.multiplyEnemyReward(1000.0);
+                    gameData.setEnemyAGI(gameData.getEnemyAGI() * 10.0);
                 }
             }
             gameData.resetEnemy();
@@ -377,7 +383,6 @@ public class FightsActivity extends AppCompatActivity {
         // Derrota
         if (gameData.getCurrentHealth() <= 0) {
             playSound(R.raw.dying);
-            Toast.makeText(this, R.string.defeat, Toast.LENGTH_SHORT).show();
             gameData.setCurrentHealth(gameData.getMaxHealth());
             gameData.resetEnemy();
             determineFirstTurn();
@@ -421,11 +426,14 @@ public class FightsActivity extends AppCompatActivity {
         pbEnemyHealth.setMax((int) gameData.getEnemyMaxHealth());
         pbEnemyHealth.setProgress((int) Math.max(0, gameData.getEnemyCurrentHealth()));
         
-        String enemyName = gameData.isBossActive() ? getString(R.string.enemy_name_boss) : getString(R.string.enemy_name_fungo);
+        String enemyName = getEnemyName();
         tvEnemyHealthLabel.setText(getString(R.string.stat_health_enemy_label, enemyName, gameData.getEnemyCurrentHealth(), gameData.getEnemyMaxHealth()));
 
         if (gameData.isBossActive()) {
-            ivEnemy.setImageResource(R.drawable.fungo_idle_boss);
+            int v = gameData.getFungoVictories();
+            if (v == 5) ivEnemy.setImageResource(R.drawable.fungo_idle_boss);
+            else if (v == 10) ivEnemy.setImageResource(R.drawable.fungo_bravo);
+            else ivEnemy.setImageResource(R.drawable.fungo_estrategista);
         } else {
             ivEnemy.setImageResource(R.drawable.fungo_idle);
         }

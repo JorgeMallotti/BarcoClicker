@@ -40,22 +40,9 @@
     <string name="upgrade_lucky">Melhorar Sorte (Custo: %1$.0f)</string>
 
     <string name="enemy_name_fungo">Fungo</string>
-    <string name="enemy_name_boss">Fungo Velho</string>
-    <string name="victory">Vitória! Ganhaste barcos!</string>
-    <string name="defeat">Derrota! Foste nocauteado.</string>
+    <string name="enemy_name_boss1">Fungo Velho</string>
+    <string name="enemy_name_boss2">Fungo Bravo</string>
+    <string name="enemy_name_boss3">Fungo Estrategista</string>
 
-    <string name="player_turn">Teu turno!</string>
-    <string name="enemy_turn">Turno do %s!</string>
-    <string name="defense_activated">Defesa ativada!</string>
-    <string name="critical_hit">CRÍTICO!</string>
-
-    <string name="boss_preparing_special">A PREPARAR ESPECIAL!</string>
-    <string name="boss_executing_special">ESPECIAL EXECUTADO!</string>
-    <string name="boss_defeated">BOSS DERROTADO: FUNGO VELHO!</string>
-    <string name="boss_appeared">UM FUNGO VELHO APARECEU!</string>
-    <string name="boss_warning_toast">FUNGO VELHO ESTÁ A PREPARAR UM ATAQUE ESPECIAL!</string>
-
-
-
-
+    <string name="boss_preparing_special">CUIDADO! ESPECIAL!</string>
 </resources>
