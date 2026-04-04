@@ -21,7 +21,7 @@ Travel to the **Combat Area** to test your strength against the fungal invasion:
     - **Fungo Velho:** Appears at 5 victories.
     - **Fungo Bravo:** Appears at 10 victories.
     - **Fungo Estrategista:** The final challenge at 15 victories.
-- **Special Attack:** Bosses can charge a devastating special move: **"AS 800 PALMAS DO INFERNO!"**
+- **Special Attack:** Bosses can charge a devastating special move: **"GOLPES REPETIDOS!"**
 - **Turn-Based Strategy:** Choose between attacking or defending to mitigate damage.
 
 ### Customization & Extras
