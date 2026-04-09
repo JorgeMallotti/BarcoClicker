@@ -354,6 +354,7 @@ public class FightsActivity extends AppCompatActivity {
                 gameData.multiplyEnemyAttack(0.10);
                 gameData.multiplyEnemyReward(0.10);
                 gameData.setEnemyAGI(gameData.getEnemyAGI() * 0.10);
+                updateMusic();
             } else {
                 gameData.addFungoVictory();
                 gameData.multiplyEnemyMaxHealth(1.2);
@@ -374,6 +375,7 @@ public class FightsActivity extends AppCompatActivity {
                     gameData.multiplyEnemyAttack(10.0);
                     gameData.multiplyEnemyReward(1000.0);
                     gameData.setEnemyAGI(gameData.getEnemyAGI() * 10.0);
+                    updateMusic();
                 }
             }
             gameData.resetEnemy();
@@ -444,6 +446,7 @@ public class FightsActivity extends AppCompatActivity {
         super.onResume();
         gameData.lastUpdateTime = System.currentTimeMillis();
         handler.post(autoClickRunnable);
+        updateMusic();
         updateUI();
     }
 
@@ -479,6 +482,21 @@ public class FightsActivity extends AppCompatActivity {
         btnUpgradeLucky.setEnabled(gameData.getScore() >= gameData.getCostLucky());
         
         updateCombatUI();
+    }
+
+    private void updateMusic() {
+        boolean isFinalBoss = (gameData.isBossActive() && gameData.getFungoVictories() == 15);
+        
+        if (isFinalBoss) {
+            // Boss music forces itself on per user request
+            MusicManager.play(this, R.raw.chefemusic);
+        } else {
+            if (!gameData.isMusicActive()) {
+                MusicManager.stop();
+            } else {
+                MusicManager.play(this, R.raw.music);
+            }
+        }
     }
 
     @Override

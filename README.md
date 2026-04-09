@@ -13,34 +13,39 @@
     - **Estrutura (Structure):** Large scale production.
     - **Barco (Boat):** High-tier automated vessel production.
 
-### Combat System (Caçador de Fungos)
-Travel to the **Fights** screen to test your strength:
-- **Stats:** Upgrade your Attack, Defense, Max Health, and Attack Speed (APS).
+### Combat System (Fights)
+Travel to the **Combat Area** to test your strength against the fungal invasion:
+- **Stats:** Upgrade your Attack, Defense, Max Health, Agility (AGI), and Luck (Sorte).
 - **Scaling Enemies:** Face off against the "Fungo". Each victory makes the next one stronger.
-- **Boss Fights:** Every 5 victories, the **Fungo Velho (Old Fungus)** appears. It is 10x stronger than regular enemies and offers massive rewards!
-- **Special Loot:** Defeating enemies grants large amounts of Barcos to fuel your upgrades.
+- **Boss Gauntlet:** Unique bosses appear as you progress:
+    - **Fungo Velho:** Appears at 5 victories.
+    - **Fungo Bravo:** Appears at 10 victories.
+    - **Fungo Estrategista:** The final challenge at 15 victories.
+- **Special Attack:** Bosses can charge a devastating special move: **"GOLPES REPETIDOS!"**
+- **Turn-Based Strategy:** Choose between attacking or defending to mitigate damage.
 
 ### Customization & Extras
-- **Boat Speed E:** A special upgrade that transforms your boat and provides a massive production multiplier.
+- **Boat Speed E:** A special late-game upgrade that transforms your boat and provides a massive production multiplier.
 - **Music System:** Purchase and toggle background music to accompany your journey.
-- **Dynamic Visuals:** Experience visual changes as you progress and face bosses.
+- **Visual Progression:** Dynamic enemy sprites and player health bars.
 
 ## 🛠️ Technical Details
 - **Language:** Java
-- **Architecture:** Uses a Singleton `GameData` class to manage game state across activities.
+- **Architecture:** Uses a Singleton `GameData` class to persist game state across activities.
 - **UI & Graphics:**
-    - **Glide:** Used for efficient image loading and animated transitions.
-    - **Handlers:** Manage the main game loops for production and combat.
-- **Sound:** Integrated `MediaPlayer` for background music and combat sound effects.
+    - **Glide:** Used for efficient image loading.
+    - **Custom ProgressBar:** Visual tracking of player and enemy health.
+    - **Handlers:** Manage real-time production and turn-based combat sequences.
+- **Sound:** Integrated `MediaPlayer` for background music, combat hits, and special effects.
 
 ## 📦 Installation
 1. Clone the repository.
 2. Open the project in **Android Studio**.
-3. Build and run the `app` module on an emulator or physical device (Android 7.0+ recommended).
+3. Build and run the `app` module on an emulator or physical device.
 
 ## 📝 Controls
 - **Short Click:** Perform actions or buy single upgrades.
-- **Long Click:** Buy the maximum possible amount of upgrades with your current balance.
+- **Long Click:** Bulk-buy the maximum possible amount of upgrades with your current balance.
 
 ---
-*Developed as part of the PildoraClicker(Barco Clicker) project.*
+*Developed as part of the PildoraClicker project.*

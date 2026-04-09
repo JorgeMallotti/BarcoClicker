@@ -1,13 +1,11 @@
 package com.example.pildoraclicker;
 
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
@@ -15,7 +13,6 @@ import com.bumptech.glide.Glide;
 public class MainActivity extends AppCompatActivity {
 
     private GameData gameData;
-    private MediaPlayer mediaPlayer;
 
     private TextView tvScore;
     private ImageButton btnClick;
@@ -215,9 +212,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         gameData.lastUpdateTime = System.currentTimeMillis();
         handler.post(autoClickRunnable);
-        if (gameData.isMusicBought() && gameData.isMusicActive()) {
-            startMusic();
-        }
+        startMusic();
         updateUI();
     }
 
@@ -225,24 +220,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         handler.removeCallbacks(autoClickRunnable);
+        // Do NOT stop music on pause to keep it playing across activities
     }
 
     private void startMusic() {
-        if (mediaPlayer == null) {
-            mediaPlayer = MediaPlayer.create(this, R.raw.music);
-            if (mediaPlayer != null) {
-                mediaPlayer.setLooping(true);
-                mediaPlayer.start();
-            }
-        } else if (!mediaPlayer.isPlaying()) {
-            mediaPlayer.start();
+        if (!gameData.isMusicBought() || !gameData.isMusicActive()) return;
+        
+        // Only play regular music if we are not currently playing boss music
+        if (MusicManager.getCurrentResId() != R.raw.chefemusic) {
+            MusicManager.play(this, R.raw.music);
         }
     }
 
     private void stopMusic() {
-        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-            mediaPlayer.pause();
-        }
+        MusicManager.stop();
     }
 
     private void updateUI() {
@@ -270,7 +261,7 @@ public class MainActivity extends AppCompatActivity {
         if (gameData.isBoatSpeedEBought()) {
             btnBoatSpeedE.setText(R.string.boat_speed_e_activated);
             btnBoatSpeedE.setEnabled(false);
-            Glide.with(this).load(R.drawable.boat_speed_e).into(btnClick);
+            btnClick.setImageResource(R.drawable.boat_speed_e);
         } else {
             btnBoatSpeedE.setEnabled(gameData.getScore() >= 1000.0);
             btnClick.setImageResource(R.drawable.boat_row_large);
@@ -280,10 +271,5 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-            mediaPlayer.release();
-            mediaPlayer = null;
-        }
     }
 }
