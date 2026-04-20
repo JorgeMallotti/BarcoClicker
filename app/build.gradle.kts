@@ -17,7 +17,13 @@ android {
     }
 
     buildTypes {
+        debug {
+            manifestPlaceholders["usesCleartextTraffic"] = "true"
+            buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:3000\"")
+        }
         release {
+            manifestPlaceholders["usesCleartextTraffic"] = "false"
+            buildConfigField("String", "API_BASE_URL", "\"https://example.com\"")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -28,6 +34,10 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 }
 

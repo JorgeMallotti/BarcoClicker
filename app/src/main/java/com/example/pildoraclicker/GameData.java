@@ -3,6 +3,8 @@ package com.example.pildoraclicker;
 public class GameData {
     private static GameData instance;
 
+    private static final int NO_FROZEN_TIME = -1;
+
     // Score e Clicker
     private double score = 0.0;
     private double clickValue = 1.0;
@@ -58,6 +60,11 @@ public class GameData {
     private boolean isMusicBought = false;
     private boolean isMusicActive = true; 
     private boolean isGritoSoundPlaying = false;
+
+    // Leaderboard Run State
+    private String leaderboardSessionToken = null;
+    private long leaderboardRunStartedAtMs = 0L;
+    private int frozenLeaderboardDisplaySeconds = NO_FROZEN_TIME;
 
     public long lastUpdateTime;
 
@@ -119,6 +126,7 @@ public class GameData {
         isMusicBought = false;
         isMusicActive = true;
         isGritoSoundPlaying = false;
+        clearLeaderboardRun();
         
         lastUpdateTime = System.currentTimeMillis();
     }
@@ -244,6 +252,51 @@ public class GameData {
     
     public boolean isGritoSoundPlaying() { return isGritoSoundPlaying; }
     public void setGritoSoundPlaying(boolean playing) { isGritoSoundPlaying = playing; }
+
+    public void startLeaderboardRun(String sessionToken) {
+        leaderboardSessionToken = sessionToken;
+        leaderboardRunStartedAtMs = System.currentTimeMillis();
+        frozenLeaderboardDisplaySeconds = NO_FROZEN_TIME;
+    }
+
+    public boolean hasLeaderboardSession() {
+        return leaderboardSessionToken != null
+                && !leaderboardSessionToken.isEmpty()
+                && leaderboardRunStartedAtMs > 0L;
+    }
+
+    public String getLeaderboardSessionToken() {
+        return leaderboardSessionToken;
+    }
+
+    public int getLeaderboardDisplaySeconds() {
+        if (frozenLeaderboardDisplaySeconds != NO_FROZEN_TIME) {
+            return frozenLeaderboardDisplaySeconds;
+        }
+        return getLeaderboardSubmissionSeconds();
+    }
+
+    public int getLeaderboardSubmissionSeconds() {
+        if (!hasLeaderboardSession()) {
+            return 0;
+        }
+        long elapsedMs = Math.max(0L, System.currentTimeMillis() - leaderboardRunStartedAtMs);
+        return (int) (elapsedMs / 1000L);
+    }
+
+    public void freezeLeaderboardDisplayTimer() {
+        frozenLeaderboardDisplaySeconds = getLeaderboardSubmissionSeconds();
+    }
+
+    public void resumeLeaderboardDisplayTimer() {
+        frozenLeaderboardDisplaySeconds = NO_FROZEN_TIME;
+    }
+
+    public void clearLeaderboardRun() {
+        leaderboardSessionToken = null;
+        leaderboardRunStartedAtMs = 0L;
+        frozenLeaderboardDisplaySeconds = NO_FROZEN_TIME;
+    }
 
     // Lógica Central
     public double getTotalProductionPerSecond() {

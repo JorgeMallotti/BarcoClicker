@@ -1,16 +1,20 @@
 package com.example.pildoraclicker;
 
 import android.content.Intent;
+import android.provider.Settings;
+import android.text.InputFilter;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import java.util.Random;
@@ -20,6 +24,7 @@ public class FightsActivity extends AppCompatActivity {
     private GameData gameData;
     private TextView tvScore, tvAttack, tvDefense, tvHealth, tvAGI, tvLucky;
     private TextView tvPlayerHealthLabel, tvEnemyHealthLabel, tvBossWarning;
+    private TextView tvRunTimer;
     private ProgressBar pbPlayerHealth, pbEnemyHealth;
     private Button btnBack, btnUpgradeAttack, btnUpgradeDefense, btnUpgradeHealth, btnUpgradeAGI, btnUpgradeLucky;
     private Button btnActionAttack, btnActionDefend;
@@ -48,6 +53,14 @@ public class FightsActivity extends AppCompatActivity {
         }
     };
 
+    private final Runnable timerRunnable = new Runnable() {
+        @Override
+        public void run() {
+            updateRunTimer();
+            handler.postDelayed(this, 1000);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +71,7 @@ public class FightsActivity extends AppCompatActivity {
 
         // Vincular UI
         tvScore = findViewById(R.id.tvScoreFights);
+        tvRunTimer = findViewById(R.id.tvRunTimerFights);
         tvAttack = findViewById(R.id.tvAttack);
         tvDefense = findViewById(R.id.tvDefense);
         tvHealth = findViewById(R.id.tvHealth);
@@ -403,19 +417,87 @@ public class FightsActivity extends AppCompatActivity {
 
     private void showWinDialog() {
         MusicManager.stop();
-        new AlertDialog.Builder(this)
-                .setTitle("Parabéns!")
-                .setMessage("Derrotaste o Fungo Estrategista e ganhaste o jogo! Queres jogar novamente?")
+        gameData.freezeLeaderboardDisplayTimer();
+        handler.removeCallbacks(timerRunnable);
+        updateRunTimer();
+
+        EditText input = new EditText(this);
+        input.setSingleLine(true);
+        input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
+        input.setHint(R.string.leaderboard_name_hint);
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(R.string.leaderboard_submit_title)
+                .setMessage(R.string.leaderboard_submit_message)
+                .setView(input)
                 .setCancelable(false)
-                .setPositiveButton("Sim", (dialog, which) -> {
-                    gameData.resetGame();
-                    Intent intent = new Intent(FightsActivity.this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish();
-                })
-                .setNegativeButton("Não", (dialog, which) -> finish())
-                .show();
+                .setPositiveButton(R.string.leaderboard_submit_action, null)
+                .setNegativeButton(R.string.leaderboard_submit_cancel, (dialogInterface, which) -> restartGameFlow())
+                .create();
+
+        dialog.setOnShowListener(dialogInterface -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(view -> {
+            String playerName = input.getText().toString().trim();
+            if (playerName.isEmpty()) {
+                input.setError(getString(R.string.error_player_name_required));
+                return;
+            }
+
+            if (!gameData.hasLeaderboardSession()) {
+                Toast.makeText(this, R.string.error_missing_session, Toast.LENGTH_LONG).show();
+                restartGameFlow();
+                dialog.dismiss();
+                return;
+            }
+
+            input.setError(null);
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+            submitLeaderboardScore(playerName, dialog);
+        }));
+        dialog.show();
+    }
+
+    private void submitLeaderboardScore(String playerName, AlertDialog dialog) {
+        String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        int submissionSeconds = gameData.getLeaderboardSubmissionSeconds();
+
+        ApiClient.submitScore(
+                this,
+                playerName,
+                submissionSeconds,
+                gameData.getLeaderboardSessionToken(),
+                deviceId,
+                new ApiClient.SubmitScoreCallback() {
+                    @Override
+                    public void onSuccess(double storedTimeSeconds) {
+                        runOnUiThread(() -> {
+                            Toast.makeText(
+                                    FightsActivity.this,
+                                    getString(R.string.score_submit_success, storedTimeSeconds),
+                                    Toast.LENGTH_LONG
+                            ).show();
+                            dialog.dismiss();
+                            LeaderboardCache.setEntries(java.util.Collections.emptyList());
+                            restartGameFlow();
+                        });
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+                        runOnUiThread(() -> {
+                            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                            Toast.makeText(FightsActivity.this, errorMessage, Toast.LENGTH_LONG).show();
+                        });
+                    }
+                }
+        );
+    }
+
+    private void restartGameFlow() {
+        gameData.resetGame();
+        Intent intent = new Intent(FightsActivity.this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 
     private void playSound(int soundResId) {
@@ -472,7 +554,9 @@ public class FightsActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         gameData.lastUpdateTime = System.currentTimeMillis();
+        gameData.resumeLeaderboardDisplayTimer();
         handler.post(autoClickRunnable);
+        handler.post(timerRunnable);
         updateMusic();
         updateUI();
     }
@@ -481,6 +565,7 @@ public class FightsActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         handler.removeCallbacks(autoClickRunnable);
+        handler.removeCallbacks(timerRunnable);
         if (comboPlayer != null) {
             comboPlayer.stop();
             comboPlayer.release();
@@ -488,8 +573,13 @@ public class FightsActivity extends AppCompatActivity {
         }
     }
 
+    private void updateRunTimer() {
+        tvRunTimer.setText(getString(R.string.run_timer_label, gameData.getLeaderboardDisplaySeconds()));
+    }
+
     private void updateUI() {
         tvScore.setText(getString(R.string.score_label, gameData.getScore()));
+        updateRunTimer();
         tvAttack.setText(getString(R.string.stat_attack_label, gameData.getAttack()));
         tvDefense.setText(getString(R.string.stat_defense_label, gameData.getDefense()));
         tvHealth.setText(getString(R.string.stat_health_label, gameData.getCurrentHealth(), gameData.getMaxHealth()));

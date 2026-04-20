@@ -21,6 +21,16 @@
         android:layout_marginBottom="16dp"
         android:layout_marginTop="16dp"/>
 
+    <TextView
+        android:id="@+id/tvRunTimer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginBottom="12dp"
+        android:text="@string/run_timer_default"
+        android:textColor="@color/black"
+        android:textSize="18sp" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -59,6 +69,13 @@
                 android:layout_height="wrap_content"
                 android:text="@string/go_to_fights"
                 android:backgroundTint="#E91E63"
+                android:layout_marginBottom="12dp" />
+
+            <Button
+                android:id="@+id/btnLeaderboard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/open_leaderboard"
                 android:layout_marginBottom="12dp" />
 
             <!-- Botão de Música -->

@@ -7,7 +7,10 @@ import android.os.Looper;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.bumptech.glide.Glide;
 
 public class MainActivity extends AppCompatActivity {
@@ -15,8 +18,10 @@ public class MainActivity extends AppCompatActivity {
     private GameData gameData;
 
     private TextView tvScore;
+    private TextView tvRunTimer;
     private ImageButton btnClick;
-    private Button btnUpgrade, btnRemo, btnMaquina, btnEstrutura, btnBarco, btnMusic, btnGoToFights, btnBoatSpeedE;
+    private Button btnUpgrade, btnRemo, btnMaquina, btnEstrutura, btnBarco, btnMusic, btnGoToFights, btnBoatSpeedE, btnLeaderboard;
+    private boolean sessionRequestInFlight = false;
 
 
     private final Handler handler = new Handler(Looper.getMainLooper());
@@ -29,6 +34,14 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private final Runnable timerRunnable = new Runnable() {
+        @Override
+        public void run() {
+            updateRunTimer();
+            handler.postDelayed(this, 1000);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         gameData = GameData.getInstance();
 
         tvScore = findViewById(R.id.tvScore);
+        tvRunTimer = findViewById(R.id.tvRunTimer);
         btnClick = findViewById(R.id.btnClick);
         btnUpgrade = findViewById(R.id.btnUpgrade);
         btnRemo = findViewById(R.id.btnRemo);
@@ -46,6 +60,10 @@ public class MainActivity extends AppCompatActivity {
         btnMusic = findViewById(R.id.btnMusic);
         btnGoToFights = findViewById(R.id.btnGoToFights);
         btnBoatSpeedE = findViewById(R.id.btnBoatSpeedE);
+        btnLeaderboard = findViewById(R.id.btnLeaderboard);
+
+        prefetchLeaderboard();
+        ensureLeaderboardSession();
 
         btnClick.setOnClickListener(v -> {
             gameData.addScore(gameData.getClickValue());
@@ -205,13 +223,20 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, FightsActivity.class);
             startActivity(intent);
         });
+
+        btnLeaderboard.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, LeaderboardActivity.class);
+            startActivity(intent);
+        });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         gameData.lastUpdateTime = System.currentTimeMillis();
+        ensureLeaderboardSession();
         handler.post(autoClickRunnable);
+        handler.post(timerRunnable);
         startMusic();
         updateUI();
     }
@@ -220,7 +245,56 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         handler.removeCallbacks(autoClickRunnable);
+        handler.removeCallbacks(timerRunnable);
         // Do NOT stop music on pause to keep it playing across activities
+    }
+
+    private void prefetchLeaderboard() {
+        ApiClient.fetchLeaderboard(this, new ApiClient.LeaderboardCallback() {
+            @Override
+            public void onSuccess(java.util.List<LeaderboardEntry> entries) {
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+            }
+        });
+    }
+
+    private void ensureLeaderboardSession() {
+        if (gameData.hasLeaderboardSession() || sessionRequestInFlight) {
+            updateRunTimer();
+            return;
+        }
+
+        sessionRequestInFlight = true;
+        ApiClient.startSession(this, new ApiClient.SessionCallback() {
+            @Override
+            public void onSuccess(String sessionToken) {
+                runOnUiThread(() -> {
+                    sessionRequestInFlight = false;
+                    if (sessionToken == null || sessionToken.trim().isEmpty()) {
+                        Toast.makeText(MainActivity.this, R.string.error_start_session, Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                    gameData.startLeaderboardRun(sessionToken.trim());
+                    updateRunTimer();
+                });
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                runOnUiThread(() -> {
+                    sessionRequestInFlight = false;
+                    Toast.makeText(MainActivity.this, errorMessage, Toast.LENGTH_LONG).show();
+                    updateRunTimer();
+                });
+            }
+        });
+    }
+
+    private void updateRunTimer() {
+        tvRunTimer.setText(getString(R.string.run_timer_label, gameData.getLeaderboardDisplaySeconds()));
     }
 
     private void startMusic() {
@@ -238,6 +312,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateUI() {
         tvScore.setText(getString(R.string.score_label, gameData.getScore()));
+        updateRunTimer();
         btnUpgrade.setText(getString(R.string.upgrade_label, gameData.getUpgradeCost()));
         
         btnRemo.setText(getString(R.string.autoclicker_remo, gameData.getValRemo(), gameData.getIncRemo(), gameData.getCostRemo()));

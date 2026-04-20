@@ -2,6 +2,8 @@
     <string name="app_name">Barco Clicker</string>
     <string name="click_me">Clica aqui!</string>
     <string name="score_label">Barcos: %1$.2f</string>
+    <string name="run_timer_label">Tempo da corrida: %1$d s</string>
+    <string name="run_timer_default">Tempo da corrida: 0 s</string>
     <string name="upgrade_label">Melhorar Clique (Custo: %1$.2f)</string>
     <string name="generators_title">Geradores Automáticos</string>
 
@@ -19,6 +21,7 @@
 
     <!-- Fights -->
     <string name="go_to_fights">Ir para Combate</string>
+    <string name="open_leaderboard">Ver Leaderboard</string>
     <string name="back_to_main">Voltar ao Clicker</string>
     <string name="stats_title">Atributos do Jogador</string>
     <string name="stat_attack_label">Ataque: %1$.0f</string>
@@ -43,6 +46,8 @@
     <string name="enemy_name_boss1">Fungo Velho</string>
     <string name="enemy_name_boss2">Fungo Bravo</string>
     <string name="enemy_name_boss3">Fungo Estrategista</string>
+    <string name="enemy_health_default">Fungo: 100/100</string>
+    <string name="vs_label">VS</string>
 
     <string name="boss_preparing_special">CUIDADO! ESPECIAL!</string>
 
@@ -50,4 +55,23 @@
     <string name="win_message">Derrotaste o Fungo Estrategista e ganhaste o jogo! Queres jogar novamente?</string>
     <string name="win_positive">Sim</string>
     <string name="win_negative">Não</string>
+
+    <string name="leaderboard_title">Leaderboard</string>
+    <string name="leaderboard_loading">A carregar leaderboard...</string>
+    <string name="leaderboard_empty">Ainda não existem pontuações.</string>
+    <string name="leaderboard_row_format">#%1$d - %2$s - %3$.3f s</string>
+    <string name="leaderboard_submit_title">Submeter Pontuação</string>
+    <string name="leaderboard_submit_message">Introduz o teu nome para guardar a pontuação final.</string>
+    <string name="leaderboard_name_hint">Nome do jogador</string>
+    <string name="leaderboard_submit_action">Submeter</string>
+    <string name="leaderboard_submit_cancel">Cancelar</string>
+
+    <string name="error_network_generic">Não foi possível comunicar com o servidor.</string>
+    <string name="error_start_session">Não foi possível iniciar a sessão segura.</string>
+    <string name="error_fetch_leaderboard">Não foi possível carregar o leaderboard.</string>
+    <string name="error_submit_score">Não foi possível submeter a pontuação.</string>
+    <string name="error_player_name_required">O nome do jogador é obrigatório.</string>
+    <string name="error_missing_session">Sessão de leaderboard em falta. Reinicia o jogo.</string>
+
+    <string name="score_submit_success">Pontuação guardada com %1$.3f s.</string>
 </resources>
