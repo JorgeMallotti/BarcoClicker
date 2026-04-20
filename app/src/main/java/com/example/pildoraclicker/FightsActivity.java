@@ -1,5 +1,6 @@
 package com.example.pildoraclicker;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import java.util.Random;
 
@@ -26,6 +28,8 @@ public class FightsActivity extends AppCompatActivity {
     private MediaPlayer gritoPlayer;
     private MediaPlayer effectPlayer;
     private MediaPlayer comboPlayer;
+    private MediaPlayer musicPlayer;
+    private int currentMusicResId = -1;
 
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final Random random = new Random();
@@ -346,9 +350,15 @@ public class FightsActivity extends AppCompatActivity {
             gameData.addScore(gameData.getEnemyReward());
             
             if (gameData.isBossActive()) {
+                int v = gameData.getFungoVictories();
                 gameData.setBossActive(false);
                 gameData.addFungoVictory(); // Increment count to progress to next milestone
                 
+                if (v == 15) {
+                    showWinDialog();
+                    return;
+                }
+
                 // Normal balance after boss
                 gameData.multiplyEnemyMaxHealth(0.10);
                 gameData.multiplyEnemyAttack(0.10);
@@ -371,7 +381,7 @@ public class FightsActivity extends AppCompatActivity {
                     gameData.setEnemyAGI(gameData.getEnemyAGI() * 10.0);
                 } else if (v == 15) {
                     gameData.setBossActive(true);
-                    gameData.multiplyEnemyMaxHealth(100.0);
+                    gameData.multiplyEnemyMaxHealth(20.0);
                     gameData.multiplyEnemyAttack(10.0);
                     gameData.multiplyEnemyReward(1000.0);
                     gameData.setEnemyAGI(gameData.getEnemyAGI() * 10.0);
@@ -389,6 +399,23 @@ public class FightsActivity extends AppCompatActivity {
             gameData.resetEnemy();
             determineFirstTurn();
         }
+    }
+
+    private void showWinDialog() {
+        MusicManager.stop();
+        new AlertDialog.Builder(this)
+                .setTitle("Parabéns!")
+                .setMessage("Derrotaste o Fungo Estrategista e ganhaste o jogo! Queres jogar novamente?")
+                .setCancelable(false)
+                .setPositiveButton("Sim", (dialog, which) -> {
+                    gameData.resetGame();
+                    Intent intent = new Intent(FightsActivity.this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    finish();
+                })
+                .setNegativeButton("Não", (dialog, which) -> finish())
+                .show();
     }
 
     private void playSound(int soundResId) {
@@ -485,18 +512,16 @@ public class FightsActivity extends AppCompatActivity {
     }
 
     private void updateMusic() {
-        boolean isFinalBoss = (gameData.isBossActive() && gameData.getFungoVictories() == 15);
-        
-        if (isFinalBoss) {
-            // Boss music forces itself on per user request
-            MusicManager.play(this, R.raw.chefemusic);
-        } else {
-            if (!gameData.isMusicActive()) {
-                MusicManager.stop();
-            } else {
-                MusicManager.play(this, R.raw.music);
-            }
+        if (!gameData.isMusicActive()) {
+            MusicManager.stop();
+            return;
         }
+
+        int targetResId = (gameData.isBossActive() && gameData.getFungoVictories() == 15)
+                ? R.raw.chefemusic
+                : R.raw.music;
+
+        MusicManager.play(this, targetResId);
     }
 
     @Override

@@ -72,6 +72,57 @@ public class GameData {
         return instance;
     }
 
+    public void resetGame() {
+        score = 0.0;
+        clickValue = 1.0;
+        upgradeCost = 10.0;
+
+        attack = 10.0;
+        defense = 5.0;
+        maxHealth = 100.0;
+        currentHealth = 100.0;
+        agi = 10.0;
+        lucky = 5.0;
+
+        costAttack = 50.0;
+        costDefense = 50.0;
+        costHealth = 50.0;
+        costAGI = 100.0;
+        costLucky = 150.0;
+
+        enemyMaxHealth = 100.0;
+        enemyCurrentHealth = 100.0;
+        enemyAttack = 8.0;
+        enemyDefense = 2.0;
+        enemyAGI = 8.0;
+        enemyReward = 200.0;
+
+        fungoVictories = 0;
+        isBossActive = false;
+
+        valRemo = 0.0;
+        valMaquina = 0.0;
+        valEstrutura = 0.0;
+        valBarco = 0.0;
+
+        incRemo = 5.0;
+        incMaquina = 5.0;
+        incEstrutura = 20.0;
+        incBarco = 100.0;
+
+        costRemo = 15.0;
+        costMaquina = 100.0;
+        costEstrutura = 500.0;
+        costBarco = 2500.0;
+
+        isBoatSpeedEBought = false;
+        isMusicBought = false;
+        isMusicActive = true;
+        isGritoSoundPlaying = false;
+        
+        lastUpdateTime = System.currentTimeMillis();
+    }
+
     // Getters e Setters para Score e Clicker
     public double getScore() { return score; }
     public void setScore(double score) { this.score = score; }

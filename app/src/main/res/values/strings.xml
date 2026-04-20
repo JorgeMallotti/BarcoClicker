@@ -45,4 +45,9 @@
     <string name="enemy_name_boss3">Fungo Estrategista</string>
 
     <string name="boss_preparing_special">CUIDADO! ESPECIAL!</string>
+
+    <string name="win_title">Parabéns!</string>
+    <string name="win_message">Derrotaste o Fungo Estrategista e ganhaste o jogo! Queres jogar novamente?</string>
+    <string name="win_positive">Sim</string>
+    <string name="win_negative">Não</string>
 </resources>
