@@ -12,10 +12,12 @@
 #   public *;
 #}
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# Preserve line numbers in stack traces for crash reporting
+-keepattributes SourceFile,LineNumberTable
+-renamesourcefileattribute SourceFile
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# Keep the leaderboard data model used by ApiClient JSON parsing
+-keep class com.example.pildoraclicker.LeaderboardEntry { *; }
+
+# Keep ApiClient callback interfaces (implemented as anonymous classes at call sites)
+-keep interface com.example.pildoraclicker.ApiClient$* { *; }

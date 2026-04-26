@@ -14,17 +14,15 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "API_BASE_URL", "\"https://aivenproject.vercel.app\"")
     }
 
     buildTypes {
         debug {
-            manifestPlaceholders["usesCleartextTraffic"] = "true"
-            buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:3000\"")
         }
         release {
-            manifestPlaceholders["usesCleartextTraffic"] = "false"
-            buildConfigField("String", "API_BASE_URL", "\"https://example.com\"")
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

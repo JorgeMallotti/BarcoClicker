@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingTop="90dp"
-    android:background="#F5F5F5"
+    android:background="@color/background_light"
     tools:context=".MainActivity">
 
     <!-- Score Fixo no Topo -->
@@ -17,7 +17,6 @@
         android:textSize="36sp"
         android:textStyle="bold"
         android:gravity="center"
-        android:textColor="@color/black"
         android:layout_marginBottom="16dp"
         android:layout_marginTop="16dp"/>
 
@@ -28,7 +27,6 @@
         android:gravity="center"
         android:layout_marginBottom="12dp"
         android:text="@string/run_timer_default"
-        android:textColor="@color/black"
         android:textSize="18sp" />
 
     <ScrollView
@@ -103,7 +101,7 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="12dp"
-                android:textColor="@color/purple_700" />
+                />
 
             <Button
                 android:id="@+id/btnRemo"

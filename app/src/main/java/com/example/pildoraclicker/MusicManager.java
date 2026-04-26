@@ -26,8 +26,7 @@ public class MusicManager {
                 mediaPlayer.start();
                 currentResId = resId;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ignored) {
         }
     }
 
