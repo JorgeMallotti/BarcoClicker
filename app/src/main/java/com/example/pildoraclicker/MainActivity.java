@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvScore;
     private TextView tvRunTimer;
     private ImageButton btnClick;
-    private Button btnUpgrade, btnRemo, btnMaquina, btnEstrutura, btnBarco, btnMusic, btnGoToFights, btnBoatSpeedE, btnLeaderboard;
+    private Button btnUpgrade, btnRemo, btnMaquina, btnEstrutura, btnBarco, btnMusicToggle, btnGoToFights, btnBoatSpeedE, btnLeaderboard;
     private boolean sessionRequestInFlight = false;
 
 
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         btnMaquina = findViewById(R.id.btnMaquina);
         btnEstrutura = findViewById(R.id.btnEstrutura);
         btnBarco = findViewById(R.id.btnBarco);
-        btnMusic = findViewById(R.id.btnMusic);
+        btnMusicToggle = findViewById(R.id.btnMusicToggle);
         btnGoToFights = findViewById(R.id.btnGoToFights);
         btnBoatSpeedE = findViewById(R.id.btnBoatSpeedE);
         btnLeaderboard = findViewById(R.id.btnLeaderboard);
@@ -192,21 +192,12 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
 
-        btnMusic.setOnClickListener(v -> {
-            if (!gameData.isMusicBought()) {
-                if (gameData.getScore() >= 1000.0) {
-                    gameData.subScore(1000.0);
-                    gameData.setMusicBought(true);
-                    gameData.setMusicActive(true);
-                    startMusic();
-                }
+        btnMusicToggle.setOnClickListener(v -> {
+            gameData.setMusicActive(!gameData.isMusicActive());
+            if (gameData.isMusicActive()) {
+                startMusic();
             } else {
-                gameData.setMusicActive(!gameData.isMusicActive());
-                if (gameData.isMusicActive()) {
-                    startMusic();
-                } else {
-                    stopMusic();
-                }
+                stopMusic();
             }
             updateUI();
         });
@@ -298,7 +289,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startMusic() {
-        if (!gameData.isMusicBought() || !gameData.isMusicActive()) return;
+        if (!gameData.isMusicActive()) return;
         
         // Only play regular music if we are not currently playing boss music
         if (MusicManager.getCurrentResId() != R.raw.chefemusic) {
@@ -311,14 +302,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateUI() {
-        tvScore.setText(getString(R.string.score_label, gameData.getScore()));
+        tvScore.setText(getString(R.string.score_label, NumberFormatter.format(gameData.getScore())));
         updateRunTimer();
-        btnUpgrade.setText(getString(R.string.upgrade_label, gameData.getUpgradeCost()));
-        
-        btnRemo.setText(getString(R.string.autoclicker_remo, gameData.getValRemo(), gameData.getIncRemo(), gameData.getCostRemo()));
-        btnMaquina.setText(getString(R.string.autoclicker_maquina, gameData.getValMaquina(), gameData.getIncMaquina(), gameData.getCostMaquina()));
-        btnEstrutura.setText(getString(R.string.autoclicker_estrutura, gameData.getValEstrutura(), gameData.getIncEstrutura(), gameData.getCostEstrutura()));
-        btnBarco.setText(getString(R.string.autoclicker_barco, gameData.getValBarco(), gameData.getIncBarco(), gameData.getCostBarco()));
+        btnUpgrade.setText(getString(R.string.upgrade_label, NumberFormatter.format(gameData.getUpgradeCost())));
+
+        btnRemo.setText(getString(R.string.autoclicker_remo, NumberFormatter.format(gameData.getValRemo()), NumberFormatter.format(gameData.getIncRemo()), NumberFormatter.format(gameData.getCostRemo())));
+        btnMaquina.setText(getString(R.string.autoclicker_maquina, NumberFormatter.format(gameData.getValMaquina()), NumberFormatter.format(gameData.getIncMaquina()), NumberFormatter.format(gameData.getCostMaquina())));
+        btnEstrutura.setText(getString(R.string.autoclicker_estrutura, NumberFormatter.format(gameData.getValEstrutura()), NumberFormatter.format(gameData.getIncEstrutura()), NumberFormatter.format(gameData.getCostEstrutura())));
+        btnBarco.setText(getString(R.string.autoclicker_barco, NumberFormatter.format(gameData.getValBarco()), NumberFormatter.format(gameData.getIncBarco()), NumberFormatter.format(gameData.getCostBarco())));
         
         btnUpgrade.setEnabled(gameData.getScore() >= gameData.getUpgradeCost());
         btnRemo.setEnabled(gameData.getScore() >= gameData.getCostRemo());
@@ -326,12 +317,7 @@ public class MainActivity extends AppCompatActivity {
         btnEstrutura.setEnabled(gameData.getScore() >= gameData.getCostEstrutura());
         btnBarco.setEnabled(gameData.getScore() >= gameData.getCostBarco());
 
-        if (gameData.isMusicBought()) {
-            btnMusic.setText(gameData.isMusicActive() ? R.string.music_on : R.string.music_off);
-            btnMusic.setEnabled(true);
-        } else {
-            btnMusic.setEnabled(gameData.getScore() >= 1000.0);
-        }
+        btnMusicToggle.setText(gameData.isMusicActive() ? R.string.music_on : R.string.music_off);
 
         if (gameData.isBoatSpeedEBought()) {
             btnBoatSpeedE.setText(R.string.boat_speed_e_activated);

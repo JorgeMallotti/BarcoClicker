@@ -1,18 +1,20 @@
 <resources>
     <string name="app_name">Barco Clicker</string>
     <string name="click_me">Clica aqui!</string>
-    <string name="score_label">Barcos: %1$.2f</string>
+    <string name="score_label">Barcos: %1$s</string>
     <string name="run_timer_label">Tempo da corrida: %1$d s</string>
     <string name="run_timer_default">Tempo da corrida: 0 s</string>
-    <string name="upgrade_label">Melhorar Clique (Custo: %1$.2f)</string>
+    <string name="upgrade_label">Melhorar Clique (Custo: %1$s)</string>
     <string name="generators_title">Geradores Automáticos</string>
 
-    <string name="autoclicker_remo">Remo (Total: %1$.2f/s) (+%2$.2f/s) (Custo: %3$.2f)</string>
-    <string name="autoclicker_maquina">Máquina (Total: %1$.2f/s) (+%2$.2f/s) (Custo: %3$.2f)</string>
-    <string name="autoclicker_estrutura">Estrutura (Total: %1$.2f/s) (+%2$.2f/s) (Custo: %3$.2f)</string>
-    <string name="autoclicker_barco">Barco (Total: %1$.2f/s) (+%2$.2f/s) (Custo: %3$.2f)</string>
+    <string name="autoclicker_remo">Remo (Total: %1$s/s) (+%2$s/s) (Custo: %3$s)</string>
+    <string name="autoclicker_maquina">Máquina (Total: %1$s/s) (+%2$s/s) (Custo: %3$s)</string>
+    <string name="autoclicker_estrutura">Estrutura (Total: %1$s/s) (+%2$s/s) (Custo: %3$s)</string>
+    <string name="autoclicker_barco">Barco (Total: %1$s/s) (+%2$s/s) (Custo: %3$s)</string>
 
     <string name="buy_music">Comprar Música (Custo: 1000.00)</string>
+    <string name="buy_player_upgrade">Comprar Guerreiro (Custo: 1000.00)</string>
+    <string name="player_upgrade_activated">Guerreiro Ativo!</string>
     <string name="music_on">Desligar Música</string>
     <string name="music_off">Ligar Música</string>
 
@@ -24,23 +26,23 @@
     <string name="open_leaderboard">Ver Leaderboard</string>
     <string name="back_to_main">Voltar ao Clicker</string>
     <string name="stats_title">Atributos do Jogador</string>
-    <string name="stat_attack_label">Ataque: %1$.0f</string>
-    <string name="stat_defense_label">Defesa: %1$.0f</string>
-    <string name="stat_health_label">Vida: %1$.0f/%2$.0f</string>
-    <string name="stat_agi_label">AGI: %1$.0f</string>
-    <string name="stat_lucky_label">Sorte: %1$.0f</string>
-    <string name="tu_label">Tu: %1$.0f/%2$.0f</string>
-    <string name="stat_health_enemy_label">%1$s: %2$.0f/%3$.0f</string>
+    <string name="stat_attack_label">Ataque: %1$s</string>
+    <string name="stat_defense_label">Defesa: %1$s</string>
+    <string name="stat_health_label">Vida: %1$s/%2$s</string>
+    <string name="stat_agi_label">AGI: %1$s</string>
+    <string name="stat_lucky_label">Sorte: %1$s</string>
+    <string name="tu_label">Tu: %1$s/%2$s</string>
+    <string name="stat_health_enemy_label">%1$s: %2$s/%3$s</string>
 
     <string name="btn_attack">Atacar</string>
     <string name="btn_defend">Defender</string>
     <string name="btn_back">Voltar</string>
 
-    <string name="upgrade_attack">Melhorar Ataque (Custo: %1$.0f)</string>
-    <string name="upgrade_defense">Melhorar Defesa (Custo: %1$.0f)</string>
-    <string name="upgrade_health">Melhorar Vida (Custo: %1$.0f)</string>
-    <string name="upgrade_agi">Melhorar AGI (Custo: %1$.0f)</string>
-    <string name="upgrade_lucky">Melhorar Sorte (Custo: %1$.0f)</string>
+    <string name="upgrade_attack">Melhorar Ataque (Custo: %1$s)</string>
+    <string name="upgrade_defense">Melhorar Defesa (Custo: %1$s)</string>
+    <string name="upgrade_health">Melhorar Vida (Custo: %1$s)</string>
+    <string name="upgrade_agi">Melhorar AGI (Custo: %1$s)</string>
+    <string name="upgrade_lucky">Melhorar Sorte (Custo: %1$s)</string>
 
     <string name="enemy_name_fungo">Fungo</string>
     <string name="enemy_name_boss1">Fungo Velho</string>

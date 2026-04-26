@@ -78,10 +78,10 @@
 
             <!-- Botão de Música -->
             <Button
-                android:id="@+id/btnMusic"
+                android:id="@+id/btnMusicToggle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/buy_music"
+                android:text="@string/music_off"
                 android:backgroundTint="@color/teal_700"
                 android:layout_marginBottom="12dp" />
 

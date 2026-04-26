@@ -27,6 +27,7 @@ public class FightsActivity extends AppCompatActivity {
     private TextView tvRunTimer;
     private ProgressBar pbPlayerHealth, pbEnemyHealth;
     private Button btnBack, btnUpgradeAttack, btnUpgradeDefense, btnUpgradeHealth, btnUpgradeAGI, btnUpgradeLucky;
+    private Button btnMusic, btnMusicToggle;
     private Button btnActionAttack, btnActionDefend;
     private LinearLayout layoutCombatMenu;
     private ImageView ivPlayer, ivEnemy;
@@ -92,6 +93,8 @@ public class FightsActivity extends AppCompatActivity {
         btnActionDefend = findViewById(R.id.btn_defend);
 
         btnBack = findViewById(R.id.btn_back);
+        btnMusic = findViewById(R.id.btnMusic);
+        btnMusicToggle = findViewById(R.id.btnMusicToggle);
         btnUpgradeAttack = findViewById(R.id.btnUpgradeAttack);
         btnUpgradeDefense = findViewById(R.id.btnUpgradeDefense);
         btnUpgradeHealth = findViewById(R.id.btnUpgradeHealth);
@@ -99,6 +102,18 @@ public class FightsActivity extends AppCompatActivity {
         btnUpgradeLucky = findViewById(R.id.btnUpgradeLucky);
 
         btnBack.setOnClickListener(v -> finish());
+        btnMusic.setOnClickListener(v -> {
+            if (!gameData.isMusicBought() && gameData.getScore() >= 1000.0) {
+                gameData.subScore(1000.0);
+                gameData.setMusicBought(true);
+                updateUI();
+            }
+        });
+        btnMusicToggle.setOnClickListener(v -> {
+            gameData.setMusicActive(!gameData.isMusicActive());
+            updateMusic();
+            updateUI();
+        });
 
         setupUpgradeButtons();
 
@@ -532,13 +547,13 @@ public class FightsActivity extends AppCompatActivity {
     private void updateCombatUI() {
         pbPlayerHealth.setMax((int) gameData.getMaxHealth());
         pbPlayerHealth.setProgress((int) Math.max(0, gameData.getCurrentHealth()));
-        tvPlayerHealthLabel.setText(getString(R.string.tu_label, gameData.getCurrentHealth(), gameData.getMaxHealth()));
+        tvPlayerHealthLabel.setText(getString(R.string.tu_label, NumberFormatter.format(gameData.getCurrentHealth()), NumberFormatter.format(gameData.getMaxHealth())));
 
         pbEnemyHealth.setMax((int) gameData.getEnemyMaxHealth());
         pbEnemyHealth.setProgress((int) Math.max(0, gameData.getEnemyCurrentHealth()));
         
         String enemyName = getEnemyName();
-        tvEnemyHealthLabel.setText(getString(R.string.stat_health_enemy_label, enemyName, gameData.getEnemyCurrentHealth(), gameData.getEnemyMaxHealth()));
+        tvEnemyHealthLabel.setText(getString(R.string.stat_health_enemy_label, enemyName, NumberFormatter.format(gameData.getEnemyCurrentHealth()), NumberFormatter.format(gameData.getEnemyMaxHealth())));
 
         if (gameData.isBossActive()) {
             int v = gameData.getFungoVictories();
@@ -548,6 +563,8 @@ public class FightsActivity extends AppCompatActivity {
         } else {
             ivEnemy.setImageResource(R.drawable.fungo_idle);
         }
+
+        ivPlayer.setImageResource(gameData.isMusicBought() ? R.drawable.warrior_idle : R.drawable.player);
     }
 
     @Override
@@ -578,25 +595,34 @@ public class FightsActivity extends AppCompatActivity {
     }
 
     private void updateUI() {
-        tvScore.setText(getString(R.string.score_label, gameData.getScore()));
+        tvScore.setText(getString(R.string.score_label, NumberFormatter.format(gameData.getScore())));
         updateRunTimer();
-        tvAttack.setText(getString(R.string.stat_attack_label, gameData.getAttack()));
-        tvDefense.setText(getString(R.string.stat_defense_label, gameData.getDefense()));
-        tvHealth.setText(getString(R.string.stat_health_label, gameData.getCurrentHealth(), gameData.getMaxHealth()));
-        tvAGI.setText(getString(R.string.stat_agi_label, gameData.getAGI()));
-        tvLucky.setText(getString(R.string.stat_lucky_label, gameData.getLucky()));
+        tvAttack.setText(getString(R.string.stat_attack_label, NumberFormatter.format(gameData.getAttack())));
+        tvDefense.setText(getString(R.string.stat_defense_label, NumberFormatter.format(gameData.getDefense())));
+        tvHealth.setText(getString(R.string.stat_health_label, NumberFormatter.format(gameData.getCurrentHealth()), NumberFormatter.format(gameData.getMaxHealth())));
+        tvAGI.setText(getString(R.string.stat_agi_label, NumberFormatter.format(gameData.getAGI())));
+        tvLucky.setText(getString(R.string.stat_lucky_label, NumberFormatter.format(gameData.getLucky())));
 
-        btnUpgradeAttack.setText(getString(R.string.upgrade_attack, gameData.getCostAttack()));
-        btnUpgradeDefense.setText(getString(R.string.upgrade_defense, gameData.getCostDefense()));
-        btnUpgradeHealth.setText(getString(R.string.upgrade_health, gameData.getCostHealth()));
-        btnUpgradeAGI.setText(getString(R.string.upgrade_agi, gameData.getCostAGI()));
-        btnUpgradeLucky.setText(getString(R.string.upgrade_lucky, gameData.getCostLucky()));
+        btnUpgradeAttack.setText(getString(R.string.upgrade_attack, NumberFormatter.format(gameData.getCostAttack())));
+        btnUpgradeDefense.setText(getString(R.string.upgrade_defense, NumberFormatter.format(gameData.getCostDefense())));
+        btnUpgradeHealth.setText(getString(R.string.upgrade_health, NumberFormatter.format(gameData.getCostHealth())));
+        btnUpgradeAGI.setText(getString(R.string.upgrade_agi, NumberFormatter.format(gameData.getCostAGI())));
+        btnUpgradeLucky.setText(getString(R.string.upgrade_lucky, NumberFormatter.format(gameData.getCostLucky())));
 
         btnUpgradeAttack.setEnabled(gameData.getScore() >= gameData.getCostAttack());
         btnUpgradeDefense.setEnabled(gameData.getScore() >= gameData.getCostDefense());
         btnUpgradeHealth.setEnabled(gameData.getScore() >= gameData.getCostHealth());
         btnUpgradeAGI.setEnabled(gameData.getScore() >= gameData.getCostAGI());
         btnUpgradeLucky.setEnabled(gameData.getScore() >= gameData.getCostLucky());
+
+        btnMusicToggle.setText(gameData.isMusicActive() ? R.string.music_on : R.string.music_off);
+        if (gameData.isMusicBought()) {
+            btnMusic.setText(R.string.player_upgrade_activated);
+            btnMusic.setEnabled(false);
+        } else {
+            btnMusic.setText(R.string.buy_player_upgrade);
+            btnMusic.setEnabled(gameData.getScore() >= 1000.0);
+        }
         
         updateCombatUI();
     }

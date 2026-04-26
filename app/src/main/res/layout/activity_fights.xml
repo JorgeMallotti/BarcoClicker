@@ -202,6 +202,23 @@
                 android:text="@string/upgrade_lucky" />
 
             <Button
+                android:id="@+id/btnMusicToggle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/music_off"
+                android:backgroundTint="@color/teal_700"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="12dp" />
+
+            <Button
+                android:id="@+id/btnMusic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/buy_player_upgrade"
+                android:backgroundTint="@color/teal_700"
+                android:layout_marginBottom="12dp" />
+
+            <Button
                 android:id="@+id/btn_back"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
