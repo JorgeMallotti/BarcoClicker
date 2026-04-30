@@ -23,7 +23,7 @@
 
     <!-- Fights -->
     <string name="go_to_fights">Ir para Combate</string>
-    <string name="open_leaderboard">Ver Leaderboard</string>
+    <string name="open_leaderboard">Ver Classificação</string>
     <string name="back_to_main">Voltar ao Clicker</string>
     <string name="stats_title">Atributos do Jogador</string>
     <string name="stat_attack_label">Ataque: %1$s</string>
@@ -67,6 +67,25 @@
     <string name="leaderboard_name_hint">Nome do jogador</string>
     <string name="leaderboard_submit_action">Submeter</string>
     <string name="leaderboard_submit_cancel">Cancelar</string>
+
+    <string name="settings_button">Configurações</string>
+    <string name="settings_title">Configurações do Jogo</string>
+    <string name="settings_language_label">Idioma</string>
+    <string name="settings_volume_label">Volume do jogo</string>
+    <string name="settings_volume_value">Volume: %1$d%%</string>
+    <string name="settings_volume_value_default">Volume: 100%%</string>
+    <string name="settings_save">Guardar</string>
+    <string name="settings_cancel">Cancelar</string>
+    <string name="settings_music_label">Música ativa</string>
+    <string name="language_portuguese">Português</string>
+    <string name="language_spanish">Español</string>
+    <string name="language_english">English</string>
+
+    <string-array name="settings_language_entries">
+        <item>@string/language_portuguese</item>
+        <item>@string/language_spanish</item>
+        <item>@string/language_english</item>
+    </string-array>
 
     <string name="error_network_generic">Não foi possível comunicar com o servidor.</string>
     <string name="error_start_session">Não foi possível iniciar a sessão segura.</string>

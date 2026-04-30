@@ -1,0 +1,97 @@
+<resources>
+    <string name="app_name">Barco Clicker</string>
+    <string name="click_me">¡Haz clic aquí!</string>
+    <string name="score_label">Barcos: %1$s</string>
+    <string name="run_timer_label">Tiempo de carrera: %1$d s</string>
+    <string name="run_timer_default">Tiempo de carrera: 0 s</string>
+    <string name="upgrade_label">Mejorar clic (Costo: %1$s)</string>
+    <string name="generators_title">Generadores automáticos</string>
+
+    <string name="autoclicker_remo">Remo (Total: %1$s/s) (+%2$s/s) (Costo: %3$s)</string>
+    <string name="autoclicker_maquina">Máquina (Total: %1$s/s) (+%2$s/s) (Costo: %3$s)</string>
+    <string name="autoclicker_estrutura">Estructura (Total: %1$s/s) (+%2$s/s) (Costo: %3$s)</string>
+    <string name="autoclicker_barco">Barco (Total: %1$s/s) (+%2$s/s) (Costo: %3$s)</string>
+
+    <string name="buy_music">Comprar música (Costo: 1000.00)</string>
+    <string name="buy_player_upgrade">Comprar guerrero (Costo: 1000.00)</string>
+    <string name="player_upgrade_activated">¡Guerrero activo!</string>
+    <string name="music_on">Apagar música</string>
+    <string name="music_off">Encender música</string>
+
+    <string name="buy_boat_speed_e">Comprar mejora del barco (Costo: 1000.00)</string>
+    <string name="boat_speed_e_activated">¡Mejora activa!</string>
+
+    <string name="go_to_fights">Ir al combate</string>
+    <string name="open_leaderboard">Ver clasificación</string>
+    <string name="back_to_main">Volver al clicker</string>
+    <string name="stats_title">Atributos del jugador</string>
+    <string name="stat_attack_label">Ataque: %1$s</string>
+    <string name="stat_defense_label">Defensa: %1$s</string>
+    <string name="stat_health_label">Vida: %1$s/%2$s</string>
+    <string name="stat_agi_label">AGI: %1$s</string>
+    <string name="stat_lucky_label">Suerte: %1$s</string>
+    <string name="tu_label">Tú: %1$s/%2$s</string>
+    <string name="stat_health_enemy_label">%1$s: %2$s/%3$s</string>
+
+    <string name="btn_attack">Atacar</string>
+    <string name="btn_defend">Defender</string>
+    <string name="btn_back">Volver</string>
+
+    <string name="upgrade_attack">Mejorar ataque (Costo: %1$s)</string>
+    <string name="upgrade_defense">Mejorar defensa (Costo: %1$s)</string>
+    <string name="upgrade_health">Mejorar vida (Costo: %1$s)</string>
+    <string name="upgrade_agi">Mejorar AGI (Costo: %1$s)</string>
+    <string name="upgrade_lucky">Mejorar suerte (Costo: %1$s)</string>
+
+    <string name="enemy_name_fungo">Fungo</string>
+    <string name="enemy_name_boss1">Fungo viejo</string>
+    <string name="enemy_name_boss2">Fungo bravo</string>
+    <string name="enemy_name_boss3">Fungo estratega</string>
+    <string name="enemy_health_default">Fungo: 100/100</string>
+    <string name="vs_label">VS</string>
+
+    <string name="boss_preparing_special">¡CUIDADO! ¡ESPECIAL!</string>
+
+    <string name="win_title">¡Felicidades!</string>
+    <string name="win_message">Derrotaste a Fungo Estratega y ganaste el juego. ¿Quieres jugar otra vez?</string>
+    <string name="win_positive">Sí</string>
+    <string name="win_negative">No</string>
+
+    <string name="leaderboard_title">Clasificación</string>
+    <string name="leaderboard_loading">Cargando clasificación...</string>
+    <string name="leaderboard_empty">Todavía no hay puntuaciones.</string>
+    <string name="leaderboard_row_format">#%1$d - %2$s - %3$.3f s</string>
+    <string name="leaderboard_submit_title">Enviar puntuación</string>
+    <string name="leaderboard_submit_message">Introduce tu nombre para guardar la puntuación final.</string>
+    <string name="leaderboard_name_hint">Nombre del jugador</string>
+    <string name="leaderboard_submit_action">Enviar</string>
+    <string name="leaderboard_submit_cancel">Cancelar</string>
+
+    <string name="settings_button">Configuración</string>
+    <string name="settings_title">Configuración del juego</string>
+    <string name="settings_language_label">Idioma</string>
+    <string name="settings_volume_label">Volumen del juego</string>
+    <string name="settings_volume_value">Volumen: %1$d%%</string>
+    <string name="settings_volume_value_default">Volumen: 100%%</string>
+    <string name="settings_save">Guardar</string>
+    <string name="settings_cancel">Cancelar</string>
+    <string name="settings_music_label">Música activa</string>
+    <string name="language_portuguese">Português</string>
+    <string name="language_spanish">Español</string>
+    <string name="language_english">English</string>
+
+    <string-array name="settings_language_entries">
+        <item>@string/language_portuguese</item>
+        <item>@string/language_spanish</item>
+        <item>@string/language_english</item>
+    </string-array>
+
+    <string name="error_network_generic">No se pudo comunicar con el servidor.</string>
+    <string name="error_start_session">No se pudo iniciar la sesión segura.</string>
+    <string name="error_fetch_leaderboard">No se pudo cargar la clasificación.</string>
+    <string name="error_submit_score">No se pudo enviar la puntuación.</string>
+    <string name="error_player_name_required">El nombre del jugador es obligatorio.</string>
+    <string name="error_missing_session">Falta la sesión de clasificación. Reinicia el juego.</string>
+
+    <string name="score_submit_success">Puntuación guardada con %1$.3f s.</string>
+</resources>

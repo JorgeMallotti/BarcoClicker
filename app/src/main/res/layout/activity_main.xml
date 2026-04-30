@@ -66,7 +66,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/go_to_fights"
-                android:backgroundTint="#E91E63"
+                android:backgroundTint="@color/action_fights"
+                android:layout_marginBottom="12dp" />
+
+            <Button
+                android:id="@+id/btnSettings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/settings_button"
                 android:layout_marginBottom="12dp" />
 
             <Button
@@ -76,22 +83,13 @@
                 android:text="@string/open_leaderboard"
                 android:layout_marginBottom="12dp" />
 
-            <!-- Botão de Música -->
-            <Button
-                android:id="@+id/btnMusicToggle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/music_off"
-                android:backgroundTint="@color/teal_700"
-                android:layout_marginBottom="12dp" />
-
             <!-- Novo Botão Boat Speed E -->
             <Button
                 android:id="@+id/btnBoatSpeedE"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/buy_boat_speed_e"
-                android:backgroundTint="#FF9800"
+                android:backgroundTint="@color/action_boat_upgrade"
                 android:layout_marginBottom="8dp" />
 
             <TextView

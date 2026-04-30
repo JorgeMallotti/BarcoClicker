@@ -1,0 +1,97 @@
+<resources>
+    <string name="app_name">Boat Clicker</string>
+    <string name="click_me">Click here!</string>
+    <string name="score_label">Boats: %1$s</string>
+    <string name="run_timer_label">Run time: %1$d s</string>
+    <string name="run_timer_default">Run time: 0 s</string>
+    <string name="upgrade_label">Upgrade click (Cost: %1$s)</string>
+    <string name="generators_title">Auto generators</string>
+
+    <string name="autoclicker_remo">Oar (Total: %1$s/s) (+%2$s/s) (Cost: %3$s)</string>
+    <string name="autoclicker_maquina">Machine (Total: %1$s/s) (+%2$s/s) (Cost: %3$s)</string>
+    <string name="autoclicker_estrutura">Structure (Total: %1$s/s) (+%2$s/s) (Cost: %3$s)</string>
+    <string name="autoclicker_barco">Boat (Total: %1$s/s) (+%2$s/s) (Cost: %3$s)</string>
+
+    <string name="buy_music">Buy music (Cost: 1000.00)</string>
+    <string name="buy_player_upgrade">Buy warrior (Cost: 1000.00)</string>
+    <string name="player_upgrade_activated">Warrior active!</string>
+    <string name="music_on">Turn music off</string>
+    <string name="music_off">Turn music on</string>
+
+    <string name="buy_boat_speed_e">Buy boat upgrade (Cost: 1000.00)</string>
+    <string name="boat_speed_e_activated">Upgrade active!</string>
+
+    <string name="go_to_fights">Go to combat</string>
+    <string name="open_leaderboard">View leaderboard</string>
+    <string name="back_to_main">Back to clicker</string>
+    <string name="stats_title">Player stats</string>
+    <string name="stat_attack_label">Attack: %1$s</string>
+    <string name="stat_defense_label">Defense: %1$s</string>
+    <string name="stat_health_label">Health: %1$s/%2$s</string>
+    <string name="stat_agi_label">AGI: %1$s</string>
+    <string name="stat_lucky_label">Luck: %1$s</string>
+    <string name="tu_label">You: %1$s/%2$s</string>
+    <string name="stat_health_enemy_label">%1$s: %2$s/%3$s</string>
+
+    <string name="btn_attack">Attack</string>
+    <string name="btn_defend">Defend</string>
+    <string name="btn_back">Back</string>
+
+    <string name="upgrade_attack">Upgrade attack (Cost: %1$s)</string>
+    <string name="upgrade_defense">Upgrade defense (Cost: %1$s)</string>
+    <string name="upgrade_health">Upgrade health (Cost: %1$s)</string>
+    <string name="upgrade_agi">Upgrade AGI (Cost: %1$s)</string>
+    <string name="upgrade_lucky">Upgrade luck (Cost: %1$s)</string>
+
+    <string name="enemy_name_fungo">Fungo</string>
+    <string name="enemy_name_boss1">Old Fungo</string>
+    <string name="enemy_name_boss2">Fierce Fungo</string>
+    <string name="enemy_name_boss3">Strategist Fungo</string>
+    <string name="enemy_health_default">Fungo: 100/100</string>
+    <string name="vs_label">VS</string>
+
+    <string name="boss_preparing_special">WARNING! SPECIAL!</string>
+
+    <string name="win_title">Congratulations!</string>
+    <string name="win_message">You defeated Strategist Fungo and won the game! Do you want to play again?</string>
+    <string name="win_positive">Yes</string>
+    <string name="win_negative">No</string>
+
+    <string name="leaderboard_title">Leaderboard</string>
+    <string name="leaderboard_loading">Loading leaderboard...</string>
+    <string name="leaderboard_empty">No scores yet.</string>
+    <string name="leaderboard_row_format">#%1$d - %2$s - %3$.3f s</string>
+    <string name="leaderboard_submit_title">Submit score</string>
+    <string name="leaderboard_submit_message">Enter your name to save your final score.</string>
+    <string name="leaderboard_name_hint">Player name</string>
+    <string name="leaderboard_submit_action">Submit</string>
+    <string name="leaderboard_submit_cancel">Cancel</string>
+
+    <string name="settings_button">Settings</string>
+    <string name="settings_title">Game settings</string>
+    <string name="settings_language_label">Language</string>
+    <string name="settings_volume_label">Game volume</string>
+    <string name="settings_volume_value">Volume: %1$d%%</string>
+    <string name="settings_volume_value_default">Volume: 100%%</string>
+    <string name="settings_save">Save</string>
+    <string name="settings_cancel">Cancel</string>
+    <string name="settings_music_label">Music active</string>
+    <string name="language_portuguese">Portuguese</string>
+    <string name="language_spanish">Spanish</string>
+    <string name="language_english">English</string>
+
+    <string-array name="settings_language_entries">
+        <item>@string/language_portuguese</item>
+        <item>@string/language_spanish</item>
+        <item>@string/language_english</item>
+    </string-array>
+
+    <string name="error_network_generic">Could not communicate with the server.</string>
+    <string name="error_start_session">Could not start the secure session.</string>
+    <string name="error_fetch_leaderboard">Could not load the leaderboard.</string>
+    <string name="error_submit_score">Could not submit the score.</string>
+    <string name="error_player_name_required">Player name is required.</string>
+    <string name="error_missing_session">Missing leaderboard session. Restart the game.</string>
+
+    <string name="score_submit_success">Score saved with %1$.3f s.</string>
+</resources>

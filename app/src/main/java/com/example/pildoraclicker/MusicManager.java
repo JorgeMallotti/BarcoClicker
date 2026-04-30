@@ -6,11 +6,13 @@ import android.media.MediaPlayer;
 public class MusicManager {
     private static MediaPlayer mediaPlayer;
     private static int currentResId = -1;
+    private static float currentVolume = 1.0f;
 
     public static void play(Context context, int resId) {
         // If same music is already playing, do nothing to avoid restart/overlap
         if (mediaPlayer != null && currentResId == resId) {
             if (!mediaPlayer.isPlaying()) {
+                mediaPlayer.setVolume(currentVolume, currentVolume);
                 mediaPlayer.start();
             }
             return;
@@ -23,10 +25,28 @@ public class MusicManager {
             mediaPlayer = MediaPlayer.create(context.getApplicationContext(), resId);
             if (mediaPlayer != null) {
                 mediaPlayer.setLooping(true);
+                mediaPlayer.setVolume(currentVolume, currentVolume);
                 mediaPlayer.start();
                 currentResId = resId;
             }
         } catch (Exception ignored) {
+        }
+    }
+
+    public static void setVolume(float volume) {
+        if (volume < 0f) {
+            currentVolume = 0f;
+        } else if (volume > 1f) {
+            currentVolume = 1f;
+        } else {
+            currentVolume = volume;
+        }
+
+        if (mediaPlayer != null) {
+            try {
+                mediaPlayer.setVolume(currentVolume, currentVolume);
+            } catch (Exception ignored) {
+            }
         }
     }
 

@@ -60,6 +60,8 @@ public class GameData {
     private boolean isMusicBought = false;
     private boolean isMusicActive = true; 
     private boolean isGritoSoundPlaying = false;
+    private float musicVolume = 1.0f;
+    private String languageCode = "pt";
 
     // Leaderboard Run State
     private String leaderboardSessionToken = null;
@@ -249,6 +251,28 @@ public class GameData {
 
     public boolean isMusicActive() { return isMusicActive; }
     public void setMusicActive(boolean active) { isMusicActive = active; }
+
+    public float getMusicVolume() { return musicVolume; }
+    public void setMusicVolume(float volume) {
+        if (volume < 0f) {
+            musicVolume = 0f;
+            return;
+        }
+        if (volume > 1f) {
+            musicVolume = 1f;
+            return;
+        }
+        musicVolume = volume;
+    }
+
+    public String getLanguageCode() { return languageCode; }
+    public void setLanguageCode(String code) {
+        if ("es".equals(code) || "en".equals(code)) {
+            languageCode = code;
+            return;
+        }
+        languageCode = "pt";
+    }
     
     public boolean isGritoSoundPlaying() { return isGritoSoundPlaying; }
     public void setGritoSoundPlaying(boolean playing) { isGritoSoundPlaying = playing; }

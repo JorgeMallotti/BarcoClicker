@@ -7,12 +7,16 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
@@ -27,7 +31,7 @@ public class FightsActivity extends AppCompatActivity {
     private TextView tvRunTimer;
     private ProgressBar pbPlayerHealth, pbEnemyHealth;
     private Button btnBack, btnUpgradeAttack, btnUpgradeDefense, btnUpgradeHealth, btnUpgradeAGI, btnUpgradeLucky;
-    private Button btnMusic, btnMusicToggle;
+    private Button btnMusic, btnSettings;
     private Button btnActionAttack, btnActionDefend;
     private LinearLayout layoutCombatMenu;
     private ImageView ivPlayer, ivEnemy;
@@ -65,9 +69,11 @@ public class FightsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LocaleManager.applyLocale(this);
         setContentView(R.layout.activity_fights);
 
         gameData = GameData.getInstance();
+        MusicManager.setVolume(gameData.getMusicVolume());
         gameData.resetEnemy();
 
         // Vincular UI
@@ -94,7 +100,7 @@ public class FightsActivity extends AppCompatActivity {
 
         btnBack = findViewById(R.id.btn_back);
         btnMusic = findViewById(R.id.btnMusic);
-        btnMusicToggle = findViewById(R.id.btnMusicToggle);
+        btnSettings = findViewById(R.id.btnSettings);
         btnUpgradeAttack = findViewById(R.id.btnUpgradeAttack);
         btnUpgradeDefense = findViewById(R.id.btnUpgradeDefense);
         btnUpgradeHealth = findViewById(R.id.btnUpgradeHealth);
@@ -109,11 +115,7 @@ public class FightsActivity extends AppCompatActivity {
                 updateUI();
             }
         });
-        btnMusicToggle.setOnClickListener(v -> {
-            gameData.setMusicActive(!gameData.isMusicActive());
-            updateMusic();
-            updateUI();
-        });
+        btnSettings.setOnClickListener(v -> showSettingsDialog());
 
         setupUpgradeButtons();
 
@@ -436,15 +438,12 @@ public class FightsActivity extends AppCompatActivity {
         handler.removeCallbacks(timerRunnable);
         updateRunTimer();
 
-        EditText input = new EditText(this);
-        input.setSingleLine(true);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_end_game_submit, null);
+        EditText input = dialogView.findViewById(R.id.etPlayerName);
         input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
-        input.setHint(R.string.leaderboard_name_hint);
 
         AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle(R.string.leaderboard_submit_title)
-                .setMessage(R.string.leaderboard_submit_message)
-                .setView(input)
+            .setView(dialogView)
                 .setCancelable(false)
                 .setPositiveButton(R.string.leaderboard_submit_action, null)
                 .setNegativeButton(R.string.leaderboard_submit_cancel, (dialogInterface, which) -> restartGameFlow())
@@ -570,6 +569,8 @@ public class FightsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        LocaleManager.applyLocale(this);
+        MusicManager.setVolume(gameData.getMusicVolume());
         gameData.lastUpdateTime = System.currentTimeMillis();
         gameData.resumeLeaderboardDisplayTimer();
         handler.post(autoClickRunnable);
@@ -615,7 +616,6 @@ public class FightsActivity extends AppCompatActivity {
         btnUpgradeAGI.setEnabled(gameData.getScore() >= gameData.getCostAGI());
         btnUpgradeLucky.setEnabled(gameData.getScore() >= gameData.getCostLucky());
 
-        btnMusicToggle.setText(gameData.isMusicActive() ? R.string.music_on : R.string.music_off);
         if (gameData.isMusicBought()) {
             btnMusic.setText(R.string.player_upgrade_activated);
             btnMusic.setEnabled(false);
@@ -638,6 +638,80 @@ public class FightsActivity extends AppCompatActivity {
                 : R.raw.music;
 
         MusicManager.play(this, targetResId);
+    }
+
+    private void showSettingsDialog() {
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_settings, null);
+        Spinner spinLanguage = dialogView.findViewById(R.id.spinLanguage);
+        SeekBar sbMusicVolume = dialogView.findViewById(R.id.sbMusicVolume);
+        TextView tvVolumeValue = dialogView.findViewById(R.id.tvVolumeValue);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                this,
+                R.array.settings_language_entries,
+                android.R.layout.simple_spinner_item
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinLanguage.setAdapter(adapter);
+        spinLanguage.setSelection(getLanguageSelectionIndex(gameData.getLanguageCode()));
+
+        int volumeProgress = Math.round(gameData.getMusicVolume() * 100f);
+        sbMusicVolume.setProgress(volumeProgress);
+        tvVolumeValue.setText(getString(R.string.settings_volume_value, volumeProgress));
+
+        sbMusicVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                tvVolumeValue.setText(getString(R.string.settings_volume_value, progress));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setNegativeButton(R.string.settings_cancel, null)
+                .setPositiveButton(R.string.settings_save, null)
+                .create();
+
+        dialog.setOnShowListener(dialogInterface -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            String selectedLanguageCode = getLanguageCodeForSelection(spinLanguage.getSelectedItemPosition());
+            int selectedVolumePercent = sbMusicVolume.getProgress();
+            gameData.setLanguageCode(selectedLanguageCode);
+            gameData.setMusicVolume(selectedVolumePercent / 100f);
+            MusicManager.setVolume(gameData.getMusicVolume());
+            LocaleManager.applyLocale(this);
+            dialog.dismiss();
+            recreate();
+        }));
+
+        dialog.show();
+    }
+
+    private int getLanguageSelectionIndex(String languageCode) {
+        if ("es".equals(languageCode)) {
+            return 1;
+        }
+        if ("en".equals(languageCode)) {
+            return 2;
+        }
+        return 0;
+    }
+
+    private String getLanguageCodeForSelection(int index) {
+        if (index == 1) {
+            return "es";
+        }
+        if (index == 2) {
+            return "en";
+        }
+        return "pt";
     }
 
     @Override

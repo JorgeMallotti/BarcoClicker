@@ -10,6 +10,9 @@
     <color name="brand_text">#FF1F2937</color>
     <color name="brand_background">#FFF5F5F5</color>
     <color name="warning_text">#FFB00020</color>
+    <color name="action_fights">#FFE91E63</color>
+    <color name="action_boat_upgrade">#FFFF9800</color>
+    <color name="action_back">#FF9E9E9E</color>
     <color name="text_dark">@color/brand_text</color>
     <color name="background_light">@color/brand_background</color>
 </resources>

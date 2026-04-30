@@ -22,6 +22,7 @@ public class LeaderboardActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LocaleManager.applyLocale(this);
         setContentView(R.layout.activity_leaderboard);
 
         progressBar = findViewById(R.id.progressLeaderboard);

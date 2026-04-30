@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="#E3F2FD">
+    android:background="@color/background_light">
 
     <!-- Score -->
     <TextView
@@ -202,15 +202,6 @@
                 android:text="@string/upgrade_lucky" />
 
             <Button
-                android:id="@+id/btnMusicToggle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/music_off"
-                android:backgroundTint="@color/teal_700"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="12dp" />
-
-            <Button
                 android:id="@+id/btnMusic"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -219,12 +210,19 @@
                 android:layout_marginBottom="12dp" />
 
             <Button
+                android:id="@+id/btnSettings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/settings_button"
+                android:layout_marginBottom="12dp" />
+
+            <Button
                 android:id="@+id/btn_back"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/btn_back"
                 android:layout_marginTop="16dp"
-                android:backgroundTint="#9E9E9E"/>
+                android:backgroundTint="@color/action_back"/>
 
         </LinearLayout>
     </ScrollView>

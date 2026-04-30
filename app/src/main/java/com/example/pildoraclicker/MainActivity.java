@@ -4,11 +4,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.SeekBar;
+import android.widget.Switch;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
@@ -20,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvScore;
     private TextView tvRunTimer;
     private ImageButton btnClick;
-    private Button btnUpgrade, btnRemo, btnMaquina, btnEstrutura, btnBarco, btnMusicToggle, btnGoToFights, btnBoatSpeedE, btnLeaderboard;
+    private Button btnUpgrade, btnRemo, btnMaquina, btnEstrutura, btnBarco, btnGoToFights, btnBoatSpeedE, btnLeaderboard, btnSettings;
     private boolean sessionRequestInFlight = false;
 
 
@@ -45,9 +52,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LocaleManager.applyLocale(this);
         setContentView(R.layout.activity_main);
 
         gameData = GameData.getInstance();
+        MusicManager.setVolume(gameData.getMusicVolume());
 
         tvScore = findViewById(R.id.tvScore);
         tvRunTimer = findViewById(R.id.tvRunTimer);
@@ -57,10 +66,10 @@ public class MainActivity extends AppCompatActivity {
         btnMaquina = findViewById(R.id.btnMaquina);
         btnEstrutura = findViewById(R.id.btnEstrutura);
         btnBarco = findViewById(R.id.btnBarco);
-        btnMusicToggle = findViewById(R.id.btnMusicToggle);
         btnGoToFights = findViewById(R.id.btnGoToFights);
         btnBoatSpeedE = findViewById(R.id.btnBoatSpeedE);
         btnLeaderboard = findViewById(R.id.btnLeaderboard);
+        btnSettings = findViewById(R.id.btnSettings);
 
         prefetchLeaderboard();
         ensureLeaderboardSession();
@@ -192,16 +201,6 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
 
-        btnMusicToggle.setOnClickListener(v -> {
-            gameData.setMusicActive(!gameData.isMusicActive());
-            if (gameData.isMusicActive()) {
-                startMusic();
-            } else {
-                stopMusic();
-            }
-            updateUI();
-        });
-
         btnBoatSpeedE.setOnClickListener(v -> {
             if (!gameData.isBoatSpeedEBought() && gameData.getScore() >= 1000.0) {
                 gameData.subScore(1000.0);
@@ -219,11 +218,15 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, LeaderboardActivity.class);
             startActivity(intent);
         });
+
+        btnSettings.setOnClickListener(v -> showSettingsDialog());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        LocaleManager.applyLocale(this);
+        MusicManager.setVolume(gameData.getMusicVolume());
         gameData.lastUpdateTime = System.currentTimeMillis();
         ensureLeaderboardSession();
         handler.post(autoClickRunnable);
@@ -317,7 +320,6 @@ public class MainActivity extends AppCompatActivity {
         btnEstrutura.setEnabled(gameData.getScore() >= gameData.getCostEstrutura());
         btnBarco.setEnabled(gameData.getScore() >= gameData.getCostBarco());
 
-        btnMusicToggle.setText(gameData.isMusicActive() ? R.string.music_on : R.string.music_off);
 
         if (gameData.isBoatSpeedEBought()) {
             btnBoatSpeedE.setText(R.string.boat_speed_e_activated);
@@ -327,6 +329,79 @@ public class MainActivity extends AppCompatActivity {
             btnBoatSpeedE.setEnabled(gameData.getScore() >= 1000.0);
             btnClick.setImageResource(R.drawable.boat_row_large);
         }
+    }
+
+    private void showSettingsDialog() {
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_settings, null);
+        Spinner spinLanguage = dialogView.findViewById(R.id.spinLanguage);
+        SeekBar sbMusicVolume = dialogView.findViewById(R.id.sbMusicVolume);
+        TextView tvVolumeValue = dialogView.findViewById(R.id.tvVolumeValue);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                this,
+                R.array.settings_language_entries,
+                android.R.layout.simple_spinner_item
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinLanguage.setAdapter(adapter);
+        spinLanguage.setSelection(getLanguageSelectionIndex(gameData.getLanguageCode()));
+
+        int volumeProgress = Math.round(gameData.getMusicVolume() * 100f);
+        sbMusicVolume.setProgress(volumeProgress);
+        tvVolumeValue.setText(getString(R.string.settings_volume_value, volumeProgress));
+        sbMusicVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                tvVolumeValue.setText(getString(R.string.settings_volume_value, progress));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setNegativeButton(R.string.settings_cancel, null)
+                .setPositiveButton(R.string.settings_save, null)
+                .create();
+
+        dialog.setOnShowListener(dialogInterface -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            String selectedLanguageCode = getLanguageCodeForSelection(spinLanguage.getSelectedItemPosition());
+            int selectedVolumePercent = sbMusicVolume.getProgress();
+            gameData.setLanguageCode(selectedLanguageCode);
+            gameData.setMusicVolume(selectedVolumePercent / 100f);
+            MusicManager.setVolume(gameData.getMusicVolume());
+            LocaleManager.applyLocale(this);
+            dialog.dismiss();
+            recreate();
+        }));
+
+        dialog.show();
+    }
+
+    private int getLanguageSelectionIndex(String languageCode) {
+        if ("es".equals(languageCode)) {
+            return 1;
+        }
+        if ("en".equals(languageCode)) {
+            return 2;
+        }
+        return 0;
+    }
+
+    private String getLanguageCodeForSelection(int index) {
+        if (index == 1) {
+            return "es";
+        }
+        if (index == 2) {
+            return "en";
+        }
+        return "pt";
     }
 
     @Override
